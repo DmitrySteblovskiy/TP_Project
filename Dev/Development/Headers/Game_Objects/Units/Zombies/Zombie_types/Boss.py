@@ -1,4 +1,4 @@
-class Boss(Unit):
+class Zombie_Boss(Unit):
     def __init__(self, x, y, res, hero):
         super().__init__(self, x, y, res)
         self.hero = hero

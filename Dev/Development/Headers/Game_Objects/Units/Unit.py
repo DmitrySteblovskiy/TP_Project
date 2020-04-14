@@ -11,3 +11,9 @@ class Unit(GameObject):
             self.vy = y_up_velocity
         if (y_down_velocity >= 0) and (self.vy <= 0):
             self.vy = -y_down_velocity
+
+    def friction(self):
+        if (self.vx < -10):
+            self.ax = 100;
+        if (self.vx > 10):
+            self.ax = -100

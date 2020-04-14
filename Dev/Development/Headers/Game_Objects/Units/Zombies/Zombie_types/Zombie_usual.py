@@ -1,19 +1,27 @@
 class Zombie_usual(Unit):
     def __init__(self, x, y, res, hero):
-        super().__init__(self, x, y, res)
+        super().__init__(x, y, res)
+        self.orientation = 1;
         self.hero = hero
-        self.picture = res.Zombie_usual
-        self.hp = 100
+        self.picture = res.Zombie_usual_right
+        self.dead = False
 
     def behave(self):
-        if (self.hero.x <= self.x) and (self.ax > -3):
-            self.ax -= 1
+        if (self.hero.x <= self.x):
+            self.orientation = 0
+            self.picture = self.res.Zombie_usual_left
+            if self.vx > -40 * randint(1, 10):
+                self.ax -= 20 * randint(1, 10)
 
-        elif (self.hero.x >= self.x) and (self.ax > 3):
-            self.ax += 1
-
-        elif (self.hero.y <= self.y) and (self.ay > -3):
-            self.ay -= 1
-
-        elif (self.hero.y >= self.x) and (self.ay < 3):
-            self.ay += 1
+            else:
+                self.ax = 0
+                self.vx = -40 * randint(1, 10)
+        else:
+            if (self.hero.x >= self.x):
+                self.orientation = 1
+                self.picture = self.res.Zombie_usual_right
+                if self.vx < 40 * randint(1, 10):
+                    self.ax += 20 * randint(1, 10)
+                else:
+                    self.vx = 40 * randint(1, 10)
+                    self.ax = 0

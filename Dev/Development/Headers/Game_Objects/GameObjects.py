@@ -4,13 +4,15 @@ import Bullets.py
 
 class GameObject:
     def __init__(self, x, y, res):
+        self.res = res
         self.x = x
         self.y = y
         self.vx = 0
         self.vy = 0
 
         self.ax = 0
-        self.ay = -9.8
+        self.ay = -500
+        self.concerns = False
 
     def update_positions(self, dt):
         self.x += self.vx * dt
@@ -19,5 +21,7 @@ class GameObject:
         self.vx += self.ax * dt
         self.vy += self.ay * dt
 
-    def draw(self, x, y):
-        self.picture.blit(x, y)
+        self.concerns = False
+
+    def draw(self):
+        self.picture.blit(self.x, self.y)
