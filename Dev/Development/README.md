@@ -1,10 +1,19 @@
+<<<<<<< HEAD
 To run our game you should launch main.py having these very libraries installed:
 
+=======
+# PYTHON_GAME
+ To run our game you should launch main.py having these very libraries installed:
+>>>>>>> c9fc770bc307d61b30f027b55d206ff71e1bd462
 1. pyglet
 2. pyglet.window
 3. pyglet.gl
 4. random
 
+<<<<<<< HEAD
 You are playing as a hero who has risen against an intimidating horde of zombies, thereby your aim is to crush them while remaining alive:) 
 The control is quite simple: you are able to move using keys Left and Right, jump within Up key and shoot your foes down with Down key. 
 Good luck! It will certainly help you:)
+=======
+ You are playing as a hero who has risen against an intimidating horde of zombies, therevy your aim is to crush them while remaining alive:) The control is quite simple: you are able to move using keys Left and Right, jump within Up key and shoot your foes down with Down key. Good luck! It will certainly help you:)
+>>>>>>> c9fc770bc307d61b30f027b55d206ff71e1bd462
