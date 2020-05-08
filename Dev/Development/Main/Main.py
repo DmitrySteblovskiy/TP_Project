@@ -2,6 +2,8 @@ import pyglet
 from random import randint
 from pyglet.window import key
 from pyglet.gl import GL_LINES
+from pynput.mouse import Controller
+
 
 class resourses:
     def __init__(self):
@@ -172,26 +174,26 @@ class sniper_bullet(bullets):
         self.ay = 0
 
 
+
+
 class GameWindow(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.create_objects_on_map()
-
-
+#        self.create_objects_on_map()
 
     def on_draw(self):
         self.clear()
-        self.hero.draw()
+#       self.hero.draw()
 
-        self.draw_interface()
+#       self.draw_interface()
 
-        for z in self.zombies:
-            z.draw()
-        for h in self.walls:
-            h.draw()
+#       for z in self.zombies:
+#           z.draw()
+#       for h in self.walls:
+#           h.draw()
 
-        for bul in self.bullets:
-            bul.draw()
+#       for bul in self.bullets:
+#           bul.draw()
 
     def collision_walls(self, dt, object1):
         for wall in self.walls:
@@ -249,9 +251,30 @@ class GameWindow(pyglet.window.Window):
             self.hero.control(1, 0)
         if symbol == key.UP:
             self.hero.jump()
-
         if symbol == key.DOWN:
             self.shoot = 1
+        if symbol == key._1:
+            self.clear()
+            self.load_level1()
+        if symbol == key._2:
+            self.clear()
+            self.load_level2()
+        if symbol == key._3:
+            self.clear()
+            self.load_level3()
+
+    def on_mouse_press(self, x, y, button, modifier):  # changing to the 1st level
+        mouse = Controller()
+        if (button == mouse.LEFT) & ((x-10)^2 + (y-10)^2 < 40*40):
+            self.clear()
+            self.load_level1()
+        if (button == mouse.LEFT) & ((x-100)^2 + (y-100)^2 < 40*40):
+            self.clear()
+            self.load_level2()
+        if (button == mouse.LEFT) & ((x-200)^2 + (y-200)^2 < 40*40):
+            self.clear()
+            self.load_level3()
+
     def update(self, dt):
         self.hero.update_positions(dt)
 
@@ -330,7 +353,28 @@ class GameWindow(pyglet.window.Window):
         label2.draw()
         label3.draw()
 
-    def create_objects_on_map(self):
+    def load_level1(self):
+        Level1.create_objects_on_map1()
+
+        self.hero.draw()
+        self.draw_interface()
+        for z in self.zombies:
+            z.draw()
+        for h in self.walls:
+            h.draw()
+
+        for bul in self.bullets:
+            bul.draw()
+
+    def load_level2(self):
+        pass
+
+    def load_level3(self):
+        pass
+
+
+class Level1(GameWindow):
+    def create_objects_on_map1(self):
         self.shoot = 0
 
         self.hero = Hero(10, 100, resourses())
@@ -372,6 +416,11 @@ class GameWindow(pyglet.window.Window):
 
         self.bullets = []
 
+class Level2(GameWindow):
+    pass
+
+class Level3(GameWindow):
+    pass
 
 if __name__ == "__main__":
     window = GameWindow(800, 600)
