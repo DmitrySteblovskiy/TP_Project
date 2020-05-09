@@ -174,7 +174,7 @@ class sniper_bullet(bullets):
         self.ay = 0
 
 
-class GameWindow(pyglet.window.Window):
+class Map(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -197,30 +197,37 @@ class GameWindow(pyglet.window.Window):
 
     def on_mouse_press(self, x, y, button, modifier):  # changing to the 1st level
         mouse = Controller()
-        if (button == mouse.LEFT) & ((x-10)^2 + (y-10)^2 < 40*40):
+        if (button == mouse.LEFT):
+            print("true")
             self.clear()
             self.load_level1()
-        if (button == mouse.LEFT) & ((x-100)^2 + (y-100)^2 < 40*40):
+        if (button == mouse.LEFT) and ((x-100)^2 + (y-100)^2 < 40*40):
             self.clear()
             self.load_level2()
-        if (button == mouse.LEFT) & ((x-200)^2 + (y-200)^2 < 40*40):
+        if (button == mouse.LEFT) and ((x-200)^2 + (y-200)^2 < 40*40):
             self.clear()
             self.load_level3()
 
     def load_level1(self):
+        self.clear()
         self.on_close()
-        window = Levels(800, 600)
-        Level1.create_objects_on_map()
+        window = Level1(800, 600)
+        pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+        pyglet.app.run()
 
     def load_level2(self):
+        self.clear()
         self.on_close()
-        window = Levels(1200, 1080)
-        Level2.create_objects_on_map()
+        window = Level2(1200, 1080)
+        pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+        pyglet.app.run()
 
     def load_level3(self):
+        self.clear()
         self.on_close()
-        window = Levels(200, 100)
-        Level3.create_objects_on_map()
+        window = Level3(240, 135)
+        pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+        pyglet.app.run()
 
 
 class Levels(pyglet.window.Window):
@@ -346,6 +353,8 @@ class Levels(pyglet.window.Window):
         for zombie in self.zombies:
             self.collision_walls(dt, zombie)
 
+        self.level_completion()
+
     def draw_interface(self):
         text = "LOL NICE!"
 
@@ -383,6 +392,10 @@ class Levels(pyglet.window.Window):
     def create_objects_on_map(self):
         pass
 
+    def level_completion(self):
+        pass
+
+
 class Level1(Levels):
     def create_objects_on_map(self):
         self.shoot = 0
@@ -413,6 +426,15 @@ class Level1(Levels):
         self.walls.append(wall(790, 50, resourses(), "vert", 600))
 
         self.bullets = []
+
+    def level_completion(self):
+        if(self.hero.points > 3):
+            self.clear()
+            clock.sleep(5)
+            self.on_close()
+            window = Map(800, 600)
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
 
 
 class Level2(Levels):
@@ -446,6 +468,14 @@ class Level2(Levels):
 
         self.bullets = []
 
+    def level_completion(self):
+        if(self.hero.points > 50):
+            self.clear()
+            self.on_close()
+            window = Map(800, 600)
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
 
 class Level3(Levels):
     def create_objects_on_map(self):
@@ -478,8 +508,16 @@ class Level3(Levels):
 
         self.bullets = []
 
+    def level_completion(self):
+        if(self.hero.points > 250):
+            self.clear()
+            self.on_close()
+            window = Map(800, 600)
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
 
 if __name__ == "__main__":
-    window = GameWindow(800, 600)
+    window = Map(800, 600)
     pyglet.clock.schedule_interval(window.update, 1 / 60.0)
     pyglet.app.run()
