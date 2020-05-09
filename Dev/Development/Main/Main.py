@@ -192,6 +192,9 @@ class GameWindow(pyglet.window.Window):
             self.clear()
             self.load_level3()
 
+    def update(self, dt):
+        pass
+
     def on_mouse_press(self, x, y, button, modifier):  # changing to the 1st level
         mouse = Controller()
         if (button == mouse.LEFT) & ((x-10)^2 + (y-10)^2 < 40*40):
