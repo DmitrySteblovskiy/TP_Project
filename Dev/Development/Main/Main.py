@@ -4,7 +4,7 @@ from pyglet.window import key
 from pyglet.gl import *
 from pynput.mouse import Controller
 
-progress = 3
+progress = 1
 
 class resourses:
     def __init__(self):
@@ -16,6 +16,7 @@ class resourses:
         self.menu_level_1 = pyglet.image.load('icon_level_1.png')
         self.menu_level_2 = pyglet.image.load('icon_level_2.png')
         self.menu_level_3 = pyglet.image.load('icon_level_3.png')
+        self.phon_level_1 = pyglet.image.load('level_1_phon.bmp')
 
 class Interface_bottons:
     def __init__(self, x, y):
@@ -47,7 +48,7 @@ class Level_botton(Interface_bottons):
         window_current.on_close()
 
         if (self.level == 1):
-            window = Level1(800, 600)
+            window = Level1(800, 500)
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
@@ -230,7 +231,6 @@ class Map(pyglet.window.Window):
         self.buttons = []
         global progress
         self.levels_available = progress
-        print ("a")
 
         self.buttons.append(Level_botton(100, 0, self.res, 1))
         if (self.levels_available >= 2):
@@ -249,12 +249,9 @@ class Map(pyglet.window.Window):
 
     def on_mouse_press(self, x, y, button, modifier):  # changing to the 1st level
         if (button == pyglet.window.mouse.LEFT):
-            print ("b")
             for button_interface in self.buttons:
                 if button_interface.is_inside(x, y):
                     button_interface.action_if_clicked(self)
-
-
 
 class Levels(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
@@ -263,15 +260,14 @@ class Levels(pyglet.window.Window):
 
     def on_draw(self):
         glEnable(GL_BLEND)
-        self.clear()
+
+        self.phon.blit(0, 0)
         self.hero.draw()
 
         self.draw_interface()
 
         for z in self.zombies:
             z.draw()
-        for h in self.walls:
-            h.draw()
 
         for bul in self.bullets:
             bul.draw()
@@ -427,30 +423,23 @@ class Level1(Levels):
     def create_objects_on_map(self):
         self.shoot = 0
 
-        self.hero = Hero(10, 100, resourses())
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
         self.zombies = [Zombie_usual(randint(100, 200),
                                      randint(400, 600),
-                                     resourses(),
+                                     res,
                                      self.hero) for i in range(3)]
         self.walls = []
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "horiz",
-                               780))
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
 
-        self.walls.append(wall(100,
-                               150,
-                               resourses(),
-                               "horiz",
-                               400))
+        self.walls.append(wall(200, 400, res, "horiz", 400))
 
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "vert",
-                               600))
-        self.walls.append(wall(790, 50, resourses(), "vert", 600))
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
 
         self.bullets = []
 
