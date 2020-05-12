@@ -31,8 +31,8 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Headers/Map" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Main/Main.py" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -47,13 +47,35 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="E:\Learning\python\python.exe" />
+      <option name="SDK_HOME" value="D:\python\venv\Scripts\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Main" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Main/Main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="PYTHON_GAME" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../PYTHON_GAME" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../PYTHON_GAME/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -84,10 +106,16 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.Main" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.main (1)" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.Main" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.main (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -106,6 +134,11 @@
       <workItem from="1588947347415" duration="4609000" />
       <workItem from="1589029372094" duration="7640000" />
       <workItem from="1589043781934" duration="5561000" />
+      <workItem from="1589116553335" duration="282000" />
+      <workItem from="1589117913763" duration="405000" />
+      <workItem from="1589299872929" duration="100000" />
+      <workItem from="1589299990808" duration="200000" />
+      <workItem from="1589300207209" duration="4110000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <created>1589040638629</created>
@@ -129,10 +162,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="686" y="161" key="#Main/0.0.1920.1040@0.0.1920.1040" timestamp="1589049844269" />
-    <state x="279" y="88" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589029665219">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="223" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589300454708">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="223" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1586731066608" />
+    <state x="223" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1589300454708" />
     <state x="279" y="88" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589029665219" />
     <state x="503" y="54" key="#main" timestamp="1586731076515">
       <screen x="0" y="0" width="1536" height="824" />
@@ -142,38 +175,40 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="561" y="118" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589040637081" />
-    <state x="740" y="265" key="FileChooserDialogImpl" timestamp="1586866589026">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="740" y="265" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1586866589026" />
-    <state width="1877" height="257" key="GridCell.Tab.0.bottom" timestamp="1589053351207">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1586732188495" />
-    <state width="1877" height="257" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589053351207" />
-    <state width="1877" height="257" key="GridCell.Tab.0.center" timestamp="1589053351207">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1586732188495" />
-    <state width="1877" height="257" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589053351207" />
-    <state width="1877" height="257" key="GridCell.Tab.0.left" timestamp="1589053351206">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1586732188495" />
-    <state width="1877" height="257" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589053351206" />
-    <state width="1877" height="257" key="GridCell.Tab.0.right" timestamp="1589053351207">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1586732188495" />
-    <state width="1877" height="257" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589053351207" />
-    <state x="279" y="58" key="SettingsEditor" timestamp="1586731365682">
+    <state x="592" y="210" key="FileChooserDialogImpl" timestamp="1589300184982">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="279" y="58" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1586731365682" />
+    <state x="592" y="210" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1589300184982" />
+    <state x="740" y="265" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1586866589026" />
+    <state width="746" height="191" key="GridCell.Tab.0.bottom" timestamp="1589304491744">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="746" height="191" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1589304491744" />
+    <state width="1877" height="257" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589053351207" />
+    <state width="746" height="191" key="GridCell.Tab.0.center" timestamp="1589304491744">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="746" height="191" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1589304491744" />
+    <state width="1877" height="257" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589053351207" />
+    <state width="746" height="191" key="GridCell.Tab.0.left" timestamp="1589304491744">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="746" height="191" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1589304491744" />
+    <state width="1877" height="257" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589053351206" />
+    <state width="746" height="191" key="GridCell.Tab.0.right" timestamp="1589304491744">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="746" height="191" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1589304491744" />
+    <state width="1877" height="257" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589053351207" />
+    <state x="279" y="58" key="SettingsEditor" timestamp="1589300032757">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="279" y="58" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1589300032757" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Development$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1589300142453" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../../PYTHON_GAME" />
     <SUITE FILE_PATH="coverage/PYTHON_GAME$main.coverage" NAME="main Coverage Results" MODIFIED="1586732112356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Development$main.coverage" NAME="main Coverage Results" MODIFIED="1589049486359" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Development$Main.coverage" NAME="Main Coverage Results" MODIFIED="1589053244328" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Main" />
+    <SUITE FILE_PATH="coverage/Development$Main.coverage" NAME="Main Coverage Results" MODIFIED="1589304491737" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Main" />
   </component>
 </project>

@@ -1,9 +1,10 @@
 import pyglet
 from random import randint
 from pyglet.window import key
-from pyglet.gl import GL_LINES
+from pyglet.gl import *
 from pynput.mouse import Controller
 
+progress = 3
 
 class resourses:
     def __init__(self):
@@ -12,6 +13,51 @@ class resourses:
         self.hero_right = pyglet.image.load('hero_right.bmp')
         self.hero_left = pyglet.image.load('hero_left.bmp')
         self.sniper_bullet = pyglet.image.load('bullet.png')
+        self.menu_level_1 = pyglet.image.load('icon_level_1.png')
+        self.menu_level_2 = pyglet.image.load('icon_level_2.png')
+        self.menu_level_3 = pyglet.image.load('icon_level_3.png')
+
+class Interface_bottons:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def is_inside(self, mouse_x, mouse_y):
+        if mouse_x >= self.x and mouse_x <= self.x + self.picture.width:
+            if mouse_y >= self.y and mouse_y <= self.y + self.picture.height:
+                return True
+        return False
+    def draw(self):
+        self.picture.blit(self.x, self.y)
+
+
+class Level_botton(Interface_bottons):
+    def __init__(self, x, y, res, level):
+        super().__init__(x, y)
+        self.level = level
+        if self.level == 1:
+            self.picture = res.menu_level_1
+        if level == 2:
+            self.picture = res.menu_level_2
+        if level == 3:
+            self.picture = res.menu_level_3
+
+    def action_if_clicked(self, window_current):
+        window_current.clear()
+        window_current.on_close()
+
+        if (self.level == 1):
+            window = Level1(800, 600)
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+        elif (self.level == 2):
+            window = Level2(1200, 1080)
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+        elif (self.level == 3):
+            window = Level3(900, 600)
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
 
 
 class GameObject:
@@ -177,57 +223,34 @@ class sniper_bullet(bullets):
 class Map(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.res = resourses()
+        self.buttons = []
+        global progress
+        self.levels_available = progress
+        print ("a")
+
+        self.buttons.append(Level_botton(100, 0, self.res, 1))
+        if (self.levels_available >= 2):
+            self.buttons.append(Level_botton(300, 0, self.res, 2))
+        if (self.levels_available >= 3):
+            self.buttons.append(Level_botton(500, 0, self.res, 3))
 
     def on_draw(self):
         self.clear()
 
-    def on_key_press(self, symbol, modifiers):
-        if symbol == key._1:
-            self.clear()
-            self.load_level1()
-        if symbol == key._2:
-            self.clear()
-            self.load_level2()
-        if symbol == key._3:
-            self.clear()
-            self.load_level3()
+        for button in self.buttons:
+            button.draw()
 
     def update(self, dt):
         pass
 
     def on_mouse_press(self, x, y, button, modifier):  # changing to the 1st level
-        mouse = Controller()
-        if (button == mouse.LEFT):
-            print("true")
-            self.clear()
-            self.load_level1()
-        if (button == mouse.LEFT) and ((x-100)^2 + (y-100)^2 < 40*40):
-            self.clear()
-            self.load_level2()
-        if (button == mouse.LEFT) and ((x-200)^2 + (y-200)^2 < 40*40):
-            self.clear()
-            self.load_level3()
+        if (button == pyglet.window.mouse.LEFT):
+            print ("b")
+            for button_interface in self.buttons:
+                if button_interface.is_inside(x, y):
+                    button_interface.action_if_clicked(self)
 
-    def load_level1(self):
-        self.clear()
-        self.on_close()
-        window = Level1(800, 600)
-        pyglet.clock.schedule_interval(window.update, 1 / 60.0)
-        pyglet.app.run()
-
-    def load_level2(self):
-        self.clear()
-        self.on_close()
-        window = Level2(1200, 1080)
-        pyglet.clock.schedule_interval(window.update, 1 / 60.0)
-        pyglet.app.run()
-
-    def load_level3(self):
-        self.clear()
-        self.on_close()
-        window = Level3(240, 135)
-        pyglet.clock.schedule_interval(window.update, 1 / 60.0)
-        pyglet.app.run()
 
 
 class Levels(pyglet.window.Window):
@@ -430,7 +453,6 @@ class Level1(Levels):
     def level_completion(self):
         if(self.hero.points > 3):
             self.clear()
-            clock.sleep(5)
             self.on_close()
             window = Map(800, 600)
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
@@ -519,5 +541,6 @@ class Level3(Levels):
 
 if __name__ == "__main__":
     window = Map(800, 600)
+    window.config.alpha_size = 8
     pyglet.clock.schedule_interval(window.update, 1 / 60.0)
     pyglet.app.run()
