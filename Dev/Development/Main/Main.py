@@ -8,10 +8,10 @@ progress = 3
 
 class resourses:
     def __init__(self):
-        self.Zombie_usual_right = pyglet.image.load('zombie_right.bmp')
-        self.Zombie_usual_left = pyglet.image.load('zombie_left.bmp')
-        self.hero_right = pyglet.image.load('hero_right.bmp')
-        self.hero_left = pyglet.image.load('hero_left.bmp')
+        self.Zombie_usual_right = pyglet.image.load('zombie_right.png')
+        self.Zombie_usual_left = pyglet.image.load('zombie_left.png')
+        self.hero_right = pyglet.image.load('hero_right.png')
+        self.hero_left = pyglet.image.load('hero_left.png')
         self.sniper_bullet = pyglet.image.load('bullet.png')
         self.menu_level_1 = pyglet.image.load('icon_level_1.png')
         self.menu_level_2 = pyglet.image.load('icon_level_2.png')
@@ -48,8 +48,10 @@ class Level_botton(Interface_bottons):
 
         if (self.level == 1):
             window = Level1(800, 600)
+            window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
+
         elif (self.level == 2):
             window = Level2(1200, 1080)
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
@@ -82,6 +84,7 @@ class GameObject:
         self.concerns = False
 
     def draw(self):
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         self.picture.blit(self.x, self.y)
 
 
@@ -259,6 +262,7 @@ class Levels(pyglet.window.Window):
         self.create_objects_on_map()
 
     def on_draw(self):
+        glEnable(GL_BLEND)
         self.clear()
         self.hero.draw()
 
