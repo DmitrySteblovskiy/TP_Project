@@ -1,3 +1,7 @@
+import pyglet
+import Unit.py
+
+
 class Zombie_usual(Unit):
     def __init__(self, x, y, res, hero):
         super().__init__(x, y, res)

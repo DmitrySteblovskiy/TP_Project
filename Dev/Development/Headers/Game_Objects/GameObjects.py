@@ -1,6 +1,6 @@
-import Unit.py
-import Walls.py
-import Bullets.py
+import pyglet
+from pyglet.gl import GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+
 
 class GameObject:
     def __init__(self, x, y, res):
@@ -24,4 +24,5 @@ class GameObject:
         self.concerns = False
 
     def draw(self):
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         self.picture.blit(self.x, self.y)

@@ -1,3 +1,8 @@
+import pyglet
+from pyglet.gl import GL_LINES
+import GameObjects.py
+
+
 class wall(GameObject):
     def __init__(self, x, y, res, orientation, length):
         super().__init__(x, y, res)
@@ -15,3 +20,4 @@ class wall(GameObject):
             line = pyglet.graphics.vertex_list(2, ('v3f/stream', [self.x, self.y, 0, self.x, self.y + self.length, 0]),
                                                ('c3B', [255, 0, 100, 255, 0, 100]))
             line.draw(GL_LINES)
+

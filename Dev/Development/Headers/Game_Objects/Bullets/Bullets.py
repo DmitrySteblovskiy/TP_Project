@@ -1,5 +1,5 @@
-import bomb_bullet.py
-import sniper_bullet.py
+import pyglet
+import GameObjects.py
 
 
 class bullets(GameObject):

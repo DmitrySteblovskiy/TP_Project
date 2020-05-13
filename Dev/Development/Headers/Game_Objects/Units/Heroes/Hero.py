@@ -1,4 +1,6 @@
-import Skin.py
+import pyglet
+import Unit.py
+
 
 class Hero(Unit):
     def __init__(self, x, y, res):
@@ -24,4 +26,3 @@ class Hero(Unit):
     def jump(self):
         if ((self.y == 0) or (self.concerns == True)):
             self.vy = self.jump_speed
-
