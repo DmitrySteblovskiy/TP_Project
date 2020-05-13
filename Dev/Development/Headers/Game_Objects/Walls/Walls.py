@@ -1,3 +1,7 @@
+import pyglet
+from pyglet.gl import GL_LINES
+
+
 class wall(GameObject):
     def __init__(self, x, y, res, orientation, length):
         super().__init__(x, y, res)

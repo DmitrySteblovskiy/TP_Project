@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="7a702765-1be0-432a-86e3-a7efc7cae15a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Headers/Game_Objects/Walls/Walls.py" beforeDir="false" afterPath="$PROJECT_DIR$/Headers/Game_Objects/Walls/Walls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Headers/Map/Game_window.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Headers/Map/Game_window.py.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Headers/Map/Levels/Level_1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Headers/Map/Map.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,6 +160,7 @@
       <workItem from="1589300207209" duration="8136000" />
       <workItem from="1589312939548" duration="6306000" />
       <workItem from="1589366364903" duration="8641000" />
+      <workItem from="1589380241993" duration="6705000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <created>1589040638629</created>
