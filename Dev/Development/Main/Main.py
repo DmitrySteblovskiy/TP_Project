@@ -1,10 +1,12 @@
 import pyglet
 from random import randint
 from pyglet.window import key
-from pyglet.gl import *
+from pyglet.gl import GL_LINES, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 from pynput.mouse import Controller
 
+
 progress = 1
+success = False
 
 class resourses:
     def __init__(self):
@@ -17,22 +19,27 @@ class resourses:
         self.menu_level_2 = pyglet.image.load('icon_level_2.png')
         self.menu_level_3 = pyglet.image.load('icon_level_3.png')
         self.phon_level_1 = pyglet.image.load('level_1_phon.bmp')
+        self.menu_map = pyglet.image.load('icon_map.png')
 
-class Interface_bottons:
+
+class Interface_elements:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
+
+class Interface_buttons(Interface_elements):
     def is_inside(self, mouse_x, mouse_y):
         if mouse_x >= self.x and mouse_x <= self.x + self.picture.width:
             if mouse_y >= self.y and mouse_y <= self.y + self.picture.height:
                 return True
         return False
+
     def draw(self):
         self.picture.blit(self.x, self.y)
 
 
-class Level_botton(Interface_bottons):
+class Level_button(Interface_buttons):
     def __init__(self, x, y, res, level):
         super().__init__(x, y)
         self.level = level
@@ -57,10 +64,34 @@ class Level_botton(Interface_bottons):
             window = Level2(1200, 1080)
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
+
         elif (self.level == 3):
             window = Level3(900, 600)
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
+
+
+class Menu_button(Interface_buttons):
+    def __init__(self, x, y, res):
+        super().__init__(x, y)
+
+        self.picture = res.menu_map
+
+    def action_if_clicked(self, window_current):
+        window_current.clear()
+        window_current.on_close()
+        window = Map(800, 600)
+        pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+        pyglet.app.run()
+
+
+class Text_button(Interface_elements):
+    def __init__(self, text, font_name, font_size, x, y):
+        super().__init__(x,y)
+        self.label = pyglet.text.Label(self.text, self.font_name,self.font_size, self.x, self.y)
+
+    def draw(self):
+        self.label.draw()
 
 
 class GameObject:
@@ -224,19 +255,13 @@ class sniper_bullet(bullets):
         self.ay = 0
 
 
-class Map(pyglet.window.Window):
+class Interface(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.res = resourses()
         self.buttons = []
-        global progress
-        self.levels_available = progress
-
-        self.buttons.append(Level_botton(100, 0, self.res, 1))
-        if (self.levels_available >= 2):
-            self.buttons.append(Level_botton(300, 0, self.res, 2))
-        if (self.levels_available >= 3):
-            self.buttons.append(Level_botton(500, 0, self.res, 3))
+        self.labels = []
+        self.set_interface()
 
     def on_draw(self):
         self.clear()
@@ -247,11 +272,39 @@ class Map(pyglet.window.Window):
     def update(self, dt):
         pass
 
-    def on_mouse_press(self, x, y, button, modifier):  # changing to the 1st level
+    def on_mouse_press(self, x, y, button, modifier):
         if (button == pyglet.window.mouse.LEFT):
             for button_interface in self.buttons:
                 if button_interface.is_inside(x, y):
                     button_interface.action_if_clicked(self)
+
+
+class Map(Interface):
+    def set_interface(self):
+        global levels_available
+        self.buttons.append(Level_button(100, 0, self.res, 1))
+
+        for button in self.buttons:
+            button.draw()
+
+
+class Ending(Interface):
+    def set_interface(self):  # do not delete
+        self.buttons.append(Menu_button(100, 0, self.res))
+        global success
+        if (success):
+            self.labels.append(Text_button('WINNER WINNER - CHICKEN DINNER!',
+                                      'Times New Roman',
+                                      36, 400, 300))
+            for button in self.buttons:
+                button.draw()
+        else:
+            self.labels.append(Text_button('You have lost:(  Try again!',
+                                      'Times New Roman',
+                                      36, 400, 300))
+            for button in self.buttons:
+                button.draw()
+
 
 class Levels(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
@@ -376,6 +429,15 @@ class Levels(pyglet.window.Window):
         for zombie in self.zombies:
             self.collision_walls(dt, zombie)
 
+        global success
+        if (self.hero.hp <= 0):
+            success = False
+            self.clear()
+            self.on_close()
+            window = Ending(800, 600)
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
         self.level_completion()
 
     def draw_interface(self):
@@ -445,9 +507,11 @@ class Level1(Levels):
 
     def level_completion(self):
         if(self.hero.points > 3):
+            global success
+            success = True
             self.clear()
             self.on_close()
-            window = Map(800, 600)
+            window = Ending(800, 600)
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
@@ -487,7 +551,7 @@ class Level2(Levels):
         if(self.hero.points > 50):
             self.clear()
             self.on_close()
-            window = Map(800, 600)
+            window = Ending(800, 600)
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
@@ -527,7 +591,7 @@ class Level3(Levels):
         if(self.hero.points > 250):
             self.clear()
             self.on_close()
-            window = Map(800, 600)
+            window = Ending(800, 600)
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
