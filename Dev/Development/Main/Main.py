@@ -441,15 +441,7 @@ class Levels(pyglet.window.Window):
 
     def update(self, dt):
         self.hero.update_positions(dt)
-
-        i = len(self.bullets) - 1
-        while i >= 0:
-            if (self.collide_wall(dt, self.bullets[i])):
-                self.bullets[i].dead = True
-            if (self.bullets[i].dead == True):
-                self.bullets[i].y -= 1000
-                del self.bullets[i]
-            i -= 1
+        self.clean_dead_bullets(dt)
 
         print (len(self.bullets))
 
@@ -458,17 +450,7 @@ class Levels(pyglet.window.Window):
         for bul in self.bullets:
             bul.update_positions(dt)
 
-        for z in self.zombies:
-            z.behave()
-            for bul in self.bullets:
-                if self.collision_objects(dt, bul, z) == True:
-                    bul.dead = True
-                    z.hp -= 1
-                    self.hero.points += z.cost
-
-            if self.collision_objects(dt, self.hero, z) == True:
-                self.hero.hp -= 1
-            z.update_positions(dt)
+        self.interaction_with_zombies(dt)
 
         self.clean_dead_zombies()
         self.death_condition()
@@ -499,11 +481,32 @@ class Levels(pyglet.window.Window):
         label2.draw()
         label3.draw()
 
+    def interaction_with_zombies(self, dt):
+        for z in self.zombies:
+            z.behave()
+            for bul in self.bullets:
+                if self.collision_objects(dt, bul, z) == True:
+                    bul.dead = True
+                    z.hp -= 1
+                    self.hero.points += z.cost
+
+            if self.collision_objects(dt, self.hero, z) == True:
+                self.hero.hp -= 1
+            z.update_positions(dt)
+
     def clean_dead_zombies(self):
         i = len(self.zombies) - 1
         while i >= 0:
             if (self.zombies[i].hp <= 0):
                 del self.zombies[i]
+            i -= 1
+    def clean_dead_bullets(self, dt):
+        i = len(self.bullets) - 1
+        while i >= 0:
+            if (self.collide_wall(dt, self.bullets[i])):
+                self.bullets[i].dead = True
+            if (self.bullets[i].dead == True):
+                del self.bullets[i]
             i -= 1
 
     def death_condition(self):
