@@ -238,6 +238,8 @@ class Zombie_cloning(Zombie):
         self.cost = 1
         self.time = 0
 
+        self.jump_speed = randint(100, 200)
+
         self.zombies = zombies
 
         self.left_pict = self.res.cloning
@@ -248,6 +250,10 @@ class Zombie_cloning(Zombie):
         if self.time >= 100:
             self.zombies.append(Zombie_cloning(self.x, self.y, self.res, self.hero, self.zombies))
             self.time = 1
+
+
+        if ((self.y == 0) or (self.concerns == True)):
+            self.vy = self.jump_speed
 
 class Hero(Unit):
     def __init__(self, x, y, res):
@@ -271,7 +277,7 @@ class Hero(Unit):
             self.vx = 300
 
     def jump(self):
-        if ((self.y == 0) or (self.concerns == True)):
+        if (self.concerns == True):
             self.vy = self.jump_speed
 
 
