@@ -784,13 +784,13 @@ class Level5(Levels):
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
-        for i in range(2):
+        for i in range(20):
             self.zombies.append(Zombie_Boss(randint(100, 200),
                                         randint(400, 600), res, self.hero, self.zombies))
-        for i in range(3):
+        for i in range(30):
             self.zombies.append(Zombie_usual(randint(100, 200),
                                              randint(400, 600), res, self.hero))
-        for i in range (2):
+        for i in range (20):
             self.zombies.append(Zombie_cloning(randint(100, 200),
                                             randint(400, 600), res, self.hero, self.zombies))
         self.walls = []
