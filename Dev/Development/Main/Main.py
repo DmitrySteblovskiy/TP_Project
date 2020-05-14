@@ -7,7 +7,7 @@ from pynput.mouse import Controller
 
 progress = 0
 success = False
-level_passed = 6
+level_passed = 1
 
 class resourses:
     def __init__(self):
@@ -774,8 +774,15 @@ class Level5(Levels):
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
-        self.zombies.append(Zombie_cloning(randint(100, 200),
-                                     randint(400, 600), res, self.hero, self.zombies))
+        for i in range(2):
+            self.zombies.append(Zombie_Boss(randint(100, 200),
+                                        randint(400, 600), res, self.hero, self.zombies))
+        for i in range(3):
+            self.zombies.append(Zombie_usual(randint(100, 200),
+                                             randint(400, 600), res, self.hero))
+        for i in range (2):
+            self.zombies.append(Zombie_cloning(randint(100, 200),
+                                            randint(400, 600), res, self.hero, self.zombies))
         self.walls = []
         self.walls.append(wall(0, 100, res, "horiz", 800))
         self.walls.append(wall(0, 250, res, "horiz", 200))
