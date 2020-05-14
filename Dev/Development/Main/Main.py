@@ -122,12 +122,10 @@ class Menu_button(Interface_buttons):
 class Text_button(Interface_elements):
     def __init__(self, text, x, y):
         super().__init__(x,y)
-        print ("b")
         self.label = pyglet.text.Label(text, 'Times New Roman', 36, x, y)
 
     def draw(self):
         self.label.draw()
-        print ("a")
 
 
 class GameObject:
@@ -244,7 +242,6 @@ class Zombie_Boss(Zombie):
 
     def extra_ection(self):
         self.time += 1
-        print (self.hp)
         if self.time >= 100:
             self.zombies.append(Zombie_fast(self.x, self.y, self.res, self.hero))
             self.time = 1
@@ -402,6 +399,9 @@ class Levels(pyglet.window.Window):
         super().__init__(*args, **kwargs)
         self.create_objects_on_map()
 
+        self.right_press = False
+        self.left_press = False
+
     def on_draw(self):
         glEnable(GL_BLEND)
 
@@ -492,10 +492,19 @@ class Levels(pyglet.window.Window):
                 object2.y <= object1.y + object1.picture.height <= object2.y + object2.picture.height)):
             return True
 
+    def on_key_release(self, symbol, modifiers):
+        if symbol == key.LEFT:
+            self.left_press = False
+
+        if symbol == key.RIGHT:
+            self.right_press = False
+
     def on_key_press(self, symbol, modifiers):
         if symbol == key.LEFT:
+            self.left_press = True
             self.hero.control(-1, 0)
         if symbol == key.RIGHT:
+            self.right_press = True
             self.hero.control(1, 0)
         if symbol == key.UP:
             self.hero.jump()
@@ -507,7 +516,8 @@ class Levels(pyglet.window.Window):
         self.hero.update_positions(dt)
         self.clean_dead_bullets(dt)
 
-        print (len(self.bullets))
+        if self.right_press == False and self.left_press == False:
+            self.hero.vx = 0
 
         self.shooting()
 
