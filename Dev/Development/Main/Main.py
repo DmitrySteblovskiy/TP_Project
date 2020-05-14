@@ -179,8 +179,6 @@ class Zombie(Unit):
         self.hero = hero
         self.dead = False
 
-
-
     def behave(self):
         self.extra_ection()
         if (self.hero.x <= self.x):
@@ -205,6 +203,7 @@ class Zombie(Unit):
     def extra_ection(self):
         pass
 
+
 class Zombie_usual(Zombie):
     def __init__(self, x, y, res, hero):
         super().__init__(x, y, res, hero)
@@ -214,6 +213,7 @@ class Zombie_usual(Zombie):
 
         self.left_pict = self.res.Zombie_usual_left
         self.right_pict = self.res.Zombie_usual_right
+
 
 class Zombie_fast(Zombie):
     def __init__(self, x, y, res, hero):
@@ -471,6 +471,7 @@ class Levels(pyglet.window.Window):
                     object1.concerns = True
                     object1.x = wall.x - object1.picture.width - 1
                     object1.dead = True
+
     def collision_objects(self, dt, object1, object2):
         if ((object2.x <= object1.x + object1.picture.width <= object2.x + object2.picture.width) and (
                 (object2.y <= object1.y <= object2.y + object2.picture.height) or (
@@ -575,6 +576,7 @@ class Levels(pyglet.window.Window):
                 self.hero.points += self.zombies[i].cost
                 del self.zombies[i]
             i -= 1
+
     def clean_dead_bullets(self, dt):
         i = len(self.bullets) - 1
         while i >= 0:
@@ -594,6 +596,7 @@ class Levels(pyglet.window.Window):
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
+
     def shooting(self):
         if self.shoot == 1:
             if self.hero.orientation == 1:
@@ -602,6 +605,7 @@ class Levels(pyglet.window.Window):
             else:
                 self.bullets.append(sniper_bullet(self.hero.x, self.hero.y + 30, resourses(), -500, 0))
                 self.shoot = 0
+
 
 class Level1(Levels):
     def create_objects_on_map(self):
@@ -690,6 +694,7 @@ class Level2(Levels):
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
+
 class Level3(Levels):
     def create_objects_on_map(self):
         self.shoot = 0
@@ -730,6 +735,7 @@ class Level3(Levels):
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
+
 
 class Level4(Levels):
     def create_objects_on_map(self):
@@ -775,6 +781,7 @@ class Level4(Levels):
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
+
 
 class Level5(Levels):
     def create_objects_on_map(self):
