@@ -742,6 +742,8 @@ class Level4(Levels):
         self.zombies = []
         self.zombies.append(Zombie_Boss(randint(100, 200),
                                      randint(400, 600), res, self.hero, self.zombies))
+        self.zombies.append(Zombie_Boss(randint(100, 200),
+                                        randint(400, 600), res, self.hero, self.zombies))
         for i in range(3):
             self.zombies.append(Zombie_usual(randint(100, 200),
                                              randint(400, 600), res, self.hero))
