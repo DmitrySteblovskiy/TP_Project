@@ -2,7 +2,6 @@ import pyglet
 from random import randint
 from pyglet.window import key
 from pyglet.gl import GL_LINES, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
-from pynput.mouse import Controller
 
 
 progress = 0
