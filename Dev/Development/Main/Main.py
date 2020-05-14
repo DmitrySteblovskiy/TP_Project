@@ -242,7 +242,8 @@ class Zombie_Boss(Zombie):
     def extra_ection(self):
         self.time += 1
         if self.time >= 100:
-            self.zombies.append(Zombie_fast(self.x, self.y, self.res, self.hero))
+            if (len (self.zombies) < 300):
+                self.zombies.append(Zombie_fast(self.x, self.y, self.res, self.hero))
             self.time = 1
 
 
