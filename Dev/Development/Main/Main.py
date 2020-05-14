@@ -2,11 +2,11 @@ import pyglet
 from random import randint
 from pyglet.window import key
 from pyglet.gl import GL_LINES, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
-from pynput.mouse import Controller
 
 
-progress = 1
+progress = 0
 success = False
+level_passed = 1
 
 class resourses:
     def __init__(self):
@@ -18,8 +18,21 @@ class resourses:
         self.menu_level_1 = pyglet.image.load('icon_level_1.png')
         self.menu_level_2 = pyglet.image.load('icon_level_2.png')
         self.menu_level_3 = pyglet.image.load('icon_level_3.png')
+        self.menu_level_4 = pyglet.image.load('icon_level_4.png')
+        self.menu_level_5 = pyglet.image.load('icon_level_5.png')
         self.phon_level_1 = pyglet.image.load('level_1_phon.bmp')
         self.menu_map = pyglet.image.load('icon_map.png')
+        self.phon_success = pyglet.image.load('phon_success.png')
+        self.phon_fail = pyglet.image.load('fail.png')
+        self.phon_menu = pyglet.image.load('phon_menu.png')
+
+        self.zombie_fast_left = pyglet.image.load('zombie_fast_left.png')
+        self.zombie_fast_right = pyglet.image.load('zombie_fast_right.png')
+
+        self.boss_left = pyglet.image.load('boss_left.png')
+        self.boss_right = pyglet.image.load('boss_right.png')
+
+        self.cloning = pyglet.image.load('cloning.png')
 
 
 class Interface_elements:
@@ -36,6 +49,7 @@ class Interface_buttons(Interface_elements):
         return False
 
     def draw(self):
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         self.picture.blit(self.x, self.y)
 
 
@@ -49,6 +63,10 @@ class Level_button(Interface_buttons):
             self.picture = res.menu_level_2
         if level == 3:
             self.picture = res.menu_level_3
+        if level == 4:
+            self.picture = res.menu_level_4
+        if level == 5:
+            self.picture = res.menu_level_5
 
     def action_if_clicked(self, window_current):
         window_current.clear()
@@ -61,12 +79,26 @@ class Level_button(Interface_buttons):
             pyglet.app.run()
 
         elif (self.level == 2):
-            window = Level2(1200, 1080)
+            window = Level2(800, 500)
+            window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
         elif (self.level == 3):
-            window = Level3(900, 600)
+            window = Level3(800, 500)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+        elif (self.level == 4):
+            window = Level4(800, 500)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+        elif (self.level == 5):
+            window = Level5(800, 500)
+            window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
@@ -81,14 +113,15 @@ class Menu_button(Interface_buttons):
         window_current.clear()
         window_current.on_close()
         window = Map(800, 600)
+        glEnable(GL_BLEND)
         pyglet.clock.schedule_interval(window.update, 1 / 60.0)
         pyglet.app.run()
 
 
 class Text_button(Interface_elements):
-    def __init__(self, text, font_name, font_size, x, y):
+    def __init__(self, text, x, y):
         super().__init__(x,y)
-        self.label = pyglet.text.Label(self.text, self.font_name,self.font_size, self.x, self.y)
+        self.label = pyglet.text.Label(text, 'Times New Roman', 36, x, y)
 
     def draw(self):
         self.label.draw()
@@ -139,55 +172,106 @@ class Unit(GameObject):
             self.ax = -100
 
 
-class Zombie_usual(Unit):
+class Zombie(Unit):
     def __init__(self, x, y, res, hero):
         super().__init__(x, y, res)
         self.orientation = 1;
         self.hero = hero
-        self.picture = res.Zombie_usual_right
         self.dead = False
 
+
+
     def behave(self):
+        self.extra_ection()
         if (self.hero.x <= self.x):
             self.orientation = 0
-            self.picture = self.res.Zombie_usual_left
-            if self.vx > -40 * randint(1, 10):
-                self.ax -= 20 * randint(1, 10)
+            self.picture = self.left_pict
+            if self.vx > -self.velocity * randint(1, 10):
+                self.ax -= self.velocity/2 * randint(1, 10)
 
             else:
                 self.ax = 0
-                self.vx = -40 * randint(1, 10)
+                self.vx = -self.velocity * randint(1, 10)
         else:
             if (self.hero.x >= self.x):
                 self.orientation = 1
-                self.picture = self.res.Zombie_usual_right
-                if self.vx < 40 * randint(1, 10):
-                    self.ax += 20 * randint(1, 10)
+                self.picture = self.right_pict
+                if self.vx < self.velocity * randint(1, 10):
+                    self.ax += self.velocity/2 * randint(1, 10)
                 else:
-                    self.vx = 40 * randint(1, 10)
+                    self.vx = self.velocity * randint(1, 10)
                     self.ax = 0
 
+    def extra_ection(self):
+        pass
 
-class Zombie_Boss(Unit):
+class Zombie_usual(Zombie):
     def __init__(self, x, y, res, hero):
-        super().__init__(self, x, y, res)
-        self.hero = hero
-        self.picture = res.Zombie_boss
-        self.hp = 1000
+        super().__init__(x, y, res, hero)
+        self.hp = 1
+        self.velocity = 40
+        self.cost = 1
 
-    def behave(self):
-        if (self.hero.x <= self.x) and (self.ax > -30):
-            self.ax -= 2
+        self.left_pict = self.res.Zombie_usual_left
+        self.right_pict = self.res.Zombie_usual_right
 
-        elif (self.hero.x >= self.x) and (self.ax > 30):
-            self.ax += 2
+class Zombie_fast(Zombie):
+    def __init__(self, x, y, res, hero):
+        super().__init__(x, y, res, hero)
+        self.hp = 1
+        self.velocity = 60
+        self.cost = 5
 
-        elif (self.hero.y <= self.y) and (self.ay > -30):
-            self.ay -= 2
+        self.left_pict = self.res.zombie_fast_left
+        self.right_pict = self.res.zombie_fast_right
 
-        elif (self.hero.y >= self.x) and (self.ay < 30):
-            self.ay += 2
 
+class Zombie_Boss(Zombie):
+    def __init__(self, x, y, res, hero, zombies):
+        super().__init__(x, y, res, hero)
+        self.hp = 10
+        self.velocity = 20
+        self.cost = 100
+        self.time = 0
+
+        self.zombies = zombies
+
+        self.left_pict = self.res.boss_left
+        self.right_pict = self.res.boss_right
+
+    def extra_ection(self):
+        self.time += 1
+        if self.time >= 100:
+            if (len (self.zombies) < 300):
+                self.zombies.append(Zombie_fast(self.x, self.y, self.res, self.hero))
+            self.time = 1
+
+
+class Zombie_cloning(Zombie):
+    def __init__(self, x, y, res, hero, zombies):
+        super().__init__(x, y, res, hero)
+        self.hp = 1
+        self.velocity = 40
+        self.cost = 1
+        self.time = 0
+
+        self.jump_speed = randint(100, 200)
+
+        self.zombies = zombies
+
+        self.left_pict = self.res.cloning
+        self.right_pict = self.res.cloning
+
+    def extra_ection(self):
+        self.time += 1
+        if self.time >= 100:
+            if len(self.zombies) < 100:
+                self.zombies.append(Zombie_cloning(self.x, self.y, self.res, self.hero, self.zombies))
+            self.time = 1
+
+
+        if ((self.y == 0) or (self.concerns == True)):
+            self.vy = self.jump_speed
 
 class Hero(Unit):
     def __init__(self, x, y, res):
@@ -211,7 +295,7 @@ class Hero(Unit):
             self.vx = 300
 
     def jump(self):
-        if ((self.y == 0) or (self.concerns == True)):
+        if (self.concerns == True):
             self.vy = self.jump_speed
 
 
@@ -260,11 +344,12 @@ class Interface(pyglet.window.Window):
         super().__init__(*args, **kwargs)
         self.res = resourses()
         self.buttons = []
-        self.labels = []
         self.set_interface()
 
     def on_draw(self):
-        self.clear()
+        glEnable(GL_BLEND)
+
+        self.phon.blit(0, 0)
 
         for button in self.buttons:
             button.draw()
@@ -281,35 +366,41 @@ class Interface(pyglet.window.Window):
 
 class Map(Interface):
     def set_interface(self):
-        global levels_available
-        self.buttons.append(Level_button(100, 0, self.res, 1))
+        global level_passed
 
-        for button in self.buttons:
-            button.draw()
+        self.phon = self.res.phon_menu
+        self.buttons.append(Level_button(100, 200, self.res, 1))
+
+        if level_passed >= 2:
+            self.buttons.append(Level_button(200, 200, self.res, 2))
+
+        if level_passed >= 3:
+            self.buttons.append(Level_button(500, 200, self.res, 3))
+
+        if level_passed >= 4:
+            self.buttons.append(Level_button(600, 200, self.res, 4))
+
+        if level_passed >= 5:
+            self.buttons.append(Level_button(700, 200, self.res, 5))
 
 
 class Ending(Interface):
     def set_interface(self):  # do not delete
-        self.buttons.append(Menu_button(100, 0, self.res))
+        self.buttons.append(Menu_button(400, 100, self.res))
         global success
         if (success):
-            self.labels.append(Text_button('WINNER WINNER - CHICKEN DINNER!',
-                                      'Times New Roman',
-                                      36, 400, 300))
-            for button in self.buttons:
-                button.draw()
+            self.phon = self.res.phon_success
         else:
-            self.labels.append(Text_button('You have lost:(  Try again!',
-                                      'Times New Roman',
-                                      36, 400, 300))
-            for button in self.buttons:
-                button.draw()
+            self.phon = self.res.phon_fail
 
 
 class Levels(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.create_objects_on_map()
+
+        self.right_press = False
+        self.left_press = False
 
     def on_draw(self):
         glEnable(GL_BLEND)
@@ -353,6 +444,33 @@ class Levels(pyglet.window.Window):
                     object1.x = wall.x - object1.picture.width - 1
                     object1.set_collision(0, -1, -1, -1)
 
+    def collide_wall(self, dt, object1):
+        for wall in self.walls:
+            if (wall.orientation == "horiz"):
+                if ((abs(object1.y - wall.y) <= abs(object1.vy) * dt) and (
+                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
+                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= wall.x + wall.length))):
+                    object1.concerns = True
+                    object1.y = wall.y
+                    object1.dead = True
+                if ((abs(object1.y + object1.picture.height - wall.y) <= abs(object1.vy) * dt) and (
+                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
+                    object1.x + object1.picture.width - abs(
+                        object1.vx) * dt) <= wall.x + wall.length))):  # удар башкой
+                    object1.dead = True
+            else:
+                if ((abs(object1.x - wall.x) <= abs(object1.vx) * dt) and (
+                        (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
+                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))):  # стена слева
+                    object1.concerns = True
+                    object1.x = wall.x + 1
+                    object1.dead = True
+                elif ((abs(wall.x - object1.x - object1.picture.width) <= abs(object1.vx) * dt) and (
+                        (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
+                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))):  # стена справа
+                    object1.concerns = True
+                    object1.x = wall.x - object1.picture.width - 1
+                    object1.dead = True
     def collision_objects(self, dt, object1, object2):
         if ((object2.x <= object1.x + object1.picture.width <= object2.x + object2.picture.width) and (
                 (object2.y <= object1.y <= object2.y + object2.picture.height) or (
@@ -374,10 +492,19 @@ class Levels(pyglet.window.Window):
                 object2.y <= object1.y + object1.picture.height <= object2.y + object2.picture.height)):
             return True
 
+    def on_key_release(self, symbol, modifiers):
+        if symbol == key.LEFT:
+            self.left_press = False
+
+        if symbol == key.RIGHT:
+            self.right_press = False
+
     def on_key_press(self, symbol, modifiers):
         if symbol == key.LEFT:
+            self.left_press = True
             self.hero.control(-1, 0)
         if symbol == key.RIGHT:
+            self.right_press = True
             self.hero.control(1, 0)
         if symbol == key.UP:
             self.hero.jump()
@@ -387,74 +514,28 @@ class Levels(pyglet.window.Window):
 
     def update(self, dt):
         self.hero.update_positions(dt)
+        self.clean_dead_bullets(dt)
 
-        i = len(self.bullets) - 1
-        while i >= 0:
-            if (self.bullets[i].x >= 780) or (self.bullets[i].x <= 10):
-                self.bullets[i].dead = True
-            if (self.bullets[i].dead == True):
-                self.bullets[i].y -= 1000
-                del self.bullets[i]
-            i -= 1
+        if self.right_press == False and self.left_press == False:
+            self.hero.vx = 0
 
-        if self.shoot == 1:
-            if self.hero.orientation == 1:
-                self.bullets.append(sniper_bullet(self.hero.x + 20, self.hero.y + 30, resourses(), 500, 0))
-                self.shoot = 0
-            else:
-                self.bullets.append(sniper_bullet(self.hero.x, self.hero.y + 30, resourses(), -500, 0))
-                self.shoot = 0
+        self.shooting()
 
         for bul in self.bullets:
             bul.update_positions(dt)
 
-        for z in self.zombies:
-            z.behave()
+        self.interaction_with_zombies(dt)
 
-            for bul in self.bullets:
-                if self.collision_objects(dt, bul, z) == True:
-                    z.y += 1000
-                    z.x = 500
-                    self.hero.points += 1
-                    bul.dead = True
-
-            if self.collision_objects(dt, self.hero, z) == True:
-                self.hero.hp -= 1
-
-        for z in self.zombies:
-            z.update_positions(dt)
+        self.clean_dead_zombies()
+        self.death_condition()
 
         self.collision_walls(dt, self.hero)
 
         for zombie in self.zombies:
             self.collision_walls(dt, zombie)
-
-        global success
-        if (self.hero.hp <= 0):
-            success = False
-            self.clear()
-            self.on_close()
-            window = Ending(800, 600)
-            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
-            pyglet.app.run()
-
         self.level_completion()
 
     def draw_interface(self):
-        text = "LOL NICE!"
-
-        if (self.hero.hp < 0):
-            if abs(self.hero.hp) < self.hero.points:
-                text = "LOL U'RE NOT NOOB"
-
-            elif abs(self.hero.hp) >= self.hero.points:
-                text = "LOL U'RE NOOB"
-
-            elif abs(self.hero.hp) > self.hero.points * 10:
-                text = "LOL U'RE pro."
-
-        print(len(self.bullets))
-
         label = pyglet.text.Label('hp ' + str(self.hero.hp),
                                   font_name='Times New Roman',
                                   font_size=36,
@@ -465,7 +546,7 @@ class Levels(pyglet.window.Window):
                                    font_size=36,
                                    x=600, y=10)
 
-        label3 = pyglet.text.Label(text,
+        label3 = pyglet.text.Label(self.mission,
                                    font_name='Times New Roman',
                                    font_size=26,
                                    x=200, y=10)
@@ -474,25 +555,68 @@ class Levels(pyglet.window.Window):
         label2.draw()
         label3.draw()
 
-    def create_objects_on_map(self):
-        pass
+    def interaction_with_zombies(self, dt):
+        for z in self.zombies:
+            z.behave()
+            for bul in self.bullets:
+                if self.collision_objects(dt, bul, z) == True and bul.dead == False:
+                    bul.dead = True
+                    z.hp -= 1
 
-    def level_completion(self):
-        pass
 
+            if self.collision_objects(dt, self.hero, z) == True:
+                self.hero.hp -= 1
+            z.update_positions(dt)
+
+    def clean_dead_zombies(self):
+        i = len(self.zombies) - 1
+        while i >= 0:
+            if (self.zombies[i].hp <= 0):
+                self.hero.points += self.zombies[i].cost
+                del self.zombies[i]
+            i -= 1
+    def clean_dead_bullets(self, dt):
+        i = len(self.bullets) - 1
+        while i >= 0:
+            if (self.collide_wall(dt, self.bullets[i])):
+                self.bullets[i].dead = True
+            if (self.bullets[i].dead == True):
+                del self.bullets[i]
+            i -= 1
+
+    def death_condition(self):
+        global success
+        if (self.hero.hp <= 0):
+            success = False
+            self.clear()
+            self.on_close()
+            window = Ending(800, 600)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+    def shooting(self):
+        if self.shoot == 1:
+            if self.hero.orientation == 1:
+                self.bullets.append(sniper_bullet(self.hero.x + 20, self.hero.y + 30, resourses(), 500, 0))
+                self.shoot = 0
+            else:
+                self.bullets.append(sniper_bullet(self.hero.x, self.hero.y + 30, resourses(), -500, 0))
+                self.shoot = 0
 
 class Level1(Levels):
     def create_objects_on_map(self):
         self.shoot = 0
+        self.mission = "kill all zombies"
 
         res = resourses()
 
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
-        self.zombies = [Zombie_usual(randint(100, 200),
-                                     randint(400, 600),
-                                     res,
-                                     self.hero) for i in range(3)]
+        self.zombies = []
+
+        for i in range(10):
+            self.zombies.append(Zombie_usual(randint(100, 200),
+                                     randint(400, 600), res, self.hero))
         self.walls = []
         self.walls.append(wall(0, 100, res, "horiz", 800))
         self.walls.append(wall(0, 250, res, "horiz", 200))
@@ -506,12 +630,18 @@ class Level1(Levels):
         self.bullets = []
 
     def level_completion(self):
-        if(self.hero.points > 3):
+        if(len(self.zombies) == 0):
             global success
+            global level_passed
+
             success = True
             self.clear()
             self.on_close()
+
+            if level_passed < 2:
+                level_passed = 2
             window = Ending(800, 600)
+            window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
@@ -519,79 +649,177 @@ class Level1(Levels):
 class Level2(Levels):
     def create_objects_on_map(self):
         self.shoot = 0
+        self.mission = "kill all zombies"
 
-        self.hero = Hero(10, 100, resourses())
-        self.zombies = [Zombie_usual(randint(100, 200),
-                                     randint(400, 600),
-                                     resourses(),
-                                     self.hero) for i in range(3)]
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
+        self.zombies = []
+        for i in range(3):
+            self.zombies.append(Zombie_usual(randint(100, 200),
+                                             randint(400, 600), res, self.hero))
+        for i in range(3):
+            self.zombies.append(Zombie_fast(randint(100, 200),
+                                             randint(400, 600), res, self.hero))
         self.walls = []
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "horiz",
-                               780))
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
 
-        self.walls.append(wall(100,
-                               150,
-                               resourses(),
-                               "horiz",
-                               400))
+        self.walls.append(wall(200, 400, res, "horiz", 400))
 
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "vert",
-                               600))
-        self.walls.append(wall(790, 50, resourses(), "vert", 600))
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
 
         self.bullets = []
 
     def level_completion(self):
-        if(self.hero.points > 50):
+        if(len(self.zombies) == 0):
+            global success
+            global level_passed
+
+            success = True
             self.clear()
             self.on_close()
+
+            if level_passed < 3:
+                level_passed = 3
             window = Ending(800, 600)
+            window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
-
 
 class Level3(Levels):
     def create_objects_on_map(self):
         self.shoot = 0
+        self.mission = "kill all zombies"
 
-        self.hero = Hero(10, 100, resourses())
-        self.zombies = [Zombie_usual(randint(100, 200),
-                                     randint(400, 600),
-                                     resourses(),
-                                     self.hero) for i in range(3)]
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
+        self.zombies = []
+        for i in range(3):
+            self.zombies.append(Zombie_cloning(randint(100, 200),
+                                             randint(400, 600), res, self.hero, self.zombies))
         self.walls = []
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "horiz",
-                               780))
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
 
-        self.walls.append(wall(100,
-                               150,
-                               resourses(),
-                               "horiz",
-                               400))
+        self.walls.append(wall(200, 400, res, "horiz", 400))
 
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "vert",
-                               600))
-        self.walls.append(wall(790, 50, resourses(), "vert", 600))
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
 
         self.bullets = []
 
     def level_completion(self):
-        if(self.hero.points > 250):
+        if(len(self.zombies) == 0):
+            global success
+            global level_passed
+
+            success = True
             self.clear()
             self.on_close()
+
+            if level_passed < 4:
+                level_passed = 4
             window = Ending(800, 600)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+class Level4(Levels):
+    def create_objects_on_map(self):
+        self.shoot = 0
+        self.mission = "kill all zombies"
+
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
+        self.zombies = []
+        self.zombies.append(Zombie_Boss(randint(100, 200),
+                                     randint(400, 600), res, self.hero, self.zombies))
+        self.zombies.append(Zombie_Boss(randint(100, 200),
+                                        randint(400, 600), res, self.hero, self.zombies))
+        for i in range(3):
+            self.zombies.append(Zombie_usual(randint(100, 200),
+                                             randint(400, 600), res, self.hero))
+        self.walls = []
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
+
+        self.walls.append(wall(200, 400, res, "horiz", 400))
+
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
+
+        self.bullets = []
+
+    def level_completion(self):
+        if(len(self.zombies) == 0):
+            global success
+            global level_passed
+
+            success = True
+            self.clear()
+            self.on_close()
+
+            if level_passed < 5:
+                level_passed = 5
+            window = Ending(800, 600)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+class Level5(Levels):
+    def create_objects_on_map(self):
+        self.shoot = 0
+        self.mission = "kill all zombies"
+
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
+        self.zombies = []
+        for i in range(20):
+            self.zombies.append(Zombie_Boss(randint(100, 200),
+                                        randint(400, 600), res, self.hero, self.zombies))
+        for i in range(30):
+            self.zombies.append(Zombie_usual(randint(100, 200),
+                                             randint(400, 600), res, self.hero))
+        for i in range (20):
+            self.zombies.append(Zombie_cloning(randint(100, 200),
+                                            randint(400, 600), res, self.hero, self.zombies))
+        self.walls = []
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
+
+        self.walls.append(wall(200, 400, res, "horiz", 400))
+
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
+
+        self.bullets = []
+
+    def level_completion(self):
+        if(len(self.zombies) == 0):
+            global success
+            global level_passed
+
+            success = True
+            self.clear()
+            self.on_close()
+
+            if level_passed < 6:
+                level_passed = 6
+            window = Ending(800, 600)
+            window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
