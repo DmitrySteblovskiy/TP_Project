@@ -5,9 +5,9 @@ from pyglet.gl import GL_LINES, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, G
 from pynput.mouse import Controller
 
 
-progress = 1
+progress = 0
 success = False
-level_passed = 0
+level_passed = 6
 
 class resourses:
     def __init__(self):
@@ -19,6 +19,8 @@ class resourses:
         self.menu_level_1 = pyglet.image.load('icon_level_1.png')
         self.menu_level_2 = pyglet.image.load('icon_level_2.png')
         self.menu_level_3 = pyglet.image.load('icon_level_3.png')
+        self.menu_level_4 = pyglet.image.load('icon_level_4.png')
+        self.menu_level_5 = pyglet.image.load('icon_level_5.png')
         self.phon_level_1 = pyglet.image.load('level_1_phon.bmp')
         self.menu_map = pyglet.image.load('icon_map.png')
         self.phon_success = pyglet.image.load('phon_success.png')
@@ -62,6 +64,10 @@ class Level_button(Interface_buttons):
             self.picture = res.menu_level_2
         if level == 3:
             self.picture = res.menu_level_3
+        if level == 4:
+            self.picture = res.menu_level_4
+        if level == 5:
+            self.picture = res.menu_level_5
 
     def action_if_clicked(self, window_current):
         window_current.clear()
@@ -74,12 +80,26 @@ class Level_button(Interface_buttons):
             pyglet.app.run()
 
         elif (self.level == 2):
-            window = Level2(1200, 1080)
+            window = Level2(800, 500)
+            window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
         elif (self.level == 3):
-            window = Level3(900, 600)
+            window = Level3(800, 500)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+        elif (self.level == 4):
+            window = Level4(800, 500)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+        elif (self.level == 5):
+            window = Level5(800, 500)
+            window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
@@ -248,7 +268,8 @@ class Zombie_cloning(Zombie):
     def extra_ection(self):
         self.time += 1
         if self.time >= 100:
-            self.zombies.append(Zombie_cloning(self.x, self.y, self.res, self.hero, self.zombies))
+            if len(self.zombies) < 100:
+                self.zombies.append(Zombie_cloning(self.x, self.y, self.res, self.hero, self.zombies))
             self.time = 1
 
 
@@ -348,9 +369,22 @@ class Interface(pyglet.window.Window):
 
 class Map(Interface):
     def set_interface(self):
-        global levels_available
+        global level_passed
+
         self.phon = self.res.phon_menu
-        self.buttons.append(Level_button(100, 0, self.res, 1))
+        self.buttons.append(Level_button(100, 200, self.res, 1))
+
+        if level_passed >= 2:
+            self.buttons.append(Level_button(200, 200, self.res, 2))
+
+        if level_passed >= 3:
+            self.buttons.append(Level_button(500, 200, self.res, 3))
+
+        if level_passed >= 4:
+            self.buttons.append(Level_button(600, 200, self.res, 4))
+
+        if level_passed >= 5:
+            self.buttons.append(Level_button(700, 200, self.res, 5))
 
 
 class Ending(Interface):
@@ -502,7 +536,7 @@ class Levels(pyglet.window.Window):
                                    font_size=36,
                                    x=600, y=10)
 
-        label3 = pyglet.text.Label("kill 4 zombies",
+        label3 = pyglet.text.Label(self.mission,
                                    font_name='Times New Roman',
                                    font_size=26,
                                    x=200, y=10)
@@ -562,6 +596,178 @@ class Levels(pyglet.window.Window):
 class Level1(Levels):
     def create_objects_on_map(self):
         self.shoot = 0
+        self.mission = "kill all zombies"
+
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
+        self.zombies = []
+
+        for i in range(10):
+            self.zombies.append(Zombie_usual(randint(100, 200),
+                                     randint(400, 600), res, self.hero))
+        self.walls = []
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
+
+        self.walls.append(wall(200, 400, res, "horiz", 400))
+
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
+
+        self.bullets = []
+
+    def level_completion(self):
+        if(len(self.zombies) == 0):
+            global success
+            global level_passed
+
+            success = True
+            self.clear()
+            self.on_close()
+
+            if level_passed < 2:
+                level_passed = 2
+            window = Ending(800, 600)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+
+class Level2(Levels):
+    def create_objects_on_map(self):
+        self.shoot = 0
+        self.mission = "kill all zombies"
+
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
+        self.zombies = []
+        for i in range(3):
+            self.zombies.append(Zombie_usual(randint(100, 200),
+                                             randint(400, 600), res, self.hero))
+        for i in range(3):
+            self.zombies.append(Zombie_fast(randint(100, 200),
+                                             randint(400, 600), res, self.hero))
+        self.walls = []
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
+
+        self.walls.append(wall(200, 400, res, "horiz", 400))
+
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
+
+        self.bullets = []
+
+    def level_completion(self):
+        if(len(self.zombies) == 0):
+            global success
+            global level_passed
+
+            success = True
+            self.clear()
+            self.on_close()
+
+            if level_passed < 3:
+                level_passed = 3
+            window = Ending(800, 600)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+class Level3(Levels):
+    def create_objects_on_map(self):
+        self.shoot = 0
+        self.mission = "kill all zombies"
+
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
+        self.zombies = []
+        for i in range(3):
+            self.zombies.append(Zombie_cloning(randint(100, 200),
+                                             randint(400, 600), res, self.hero, self.zombies))
+        self.walls = []
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
+
+        self.walls.append(wall(200, 400, res, "horiz", 400))
+
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
+
+        self.bullets = []
+
+    def level_completion(self):
+        if(len(self.zombies) == 0):
+            global success
+            global level_passed
+
+            success = True
+            self.clear()
+            self.on_close()
+
+            if level_passed < 4:
+                level_passed = 4
+            window = Ending(800, 600)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+class Level4(Levels):
+    def create_objects_on_map(self):
+        self.shoot = 0
+        self.mission = "kill all zombies"
+
+        res = resourses()
+
+        self.phon = res.phon_level_1
+        self.hero = Hero(10, 100, res)
+        self.zombies = []
+        self.zombies.append(Zombie_Boss(randint(100, 200),
+                                     randint(400, 600), res, self.hero, self.zombies))
+        for i in range(3):
+            self.zombies.append(Zombie_usual(randint(100, 200),
+                                             randint(400, 600), res, self.hero))
+        self.walls = []
+        self.walls.append(wall(0, 100, res, "horiz", 800))
+        self.walls.append(wall(0, 250, res, "horiz", 200))
+        self.walls.append(wall(600, 250, res, "horiz", 200))
+
+        self.walls.append(wall(200, 400, res, "horiz", 400))
+
+        self.walls.append(wall(0, 100, res, "vert", 1000))
+        self.walls.append(wall(800, 100, res, "vert", 1000))
+
+        self.bullets = []
+
+    def level_completion(self):
+        if(len(self.zombies) == 0):
+            global success
+            global level_passed
+
+            success = True
+            self.clear()
+            self.on_close()
+
+            if level_passed < 5:
+                level_passed = 5
+            window = Ending(800, 600)
+            window.config.alpha_size = 8
+            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+            pyglet.app.run()
+
+class Level5(Levels):
+    def create_objects_on_map(self):
+        self.shoot = 0
+        self.mission = "kill all zombies"
 
         res = resourses()
 
@@ -583,93 +789,18 @@ class Level1(Levels):
         self.bullets = []
 
     def level_completion(self):
-        if(self.hero.points >= 200):
+        if(len(self.zombies) == 0):
             global success
+            global level_passed
+
             success = True
             self.clear()
             self.on_close()
+
+            if level_passed < 6:
+                level_passed = 6
             window = Ending(800, 600)
             window.config.alpha_size = 8
-            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
-            pyglet.app.run()
-
-
-class Level2(Levels):
-    def create_objects_on_map(self):
-        self.shoot = 0
-
-        self.hero = Hero(10, 100, resourses())
-        self.zombies = [Zombie_usual(randint(100, 200),
-                                     randint(400, 600),
-                                     resourses(),
-                                     self.hero) for i in range(3)]
-        self.walls = []
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "horiz",
-                               780))
-
-        self.walls.append(wall(100,
-                               150,
-                               resourses(),
-                               "horiz",
-                               400))
-
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "vert",
-                               600))
-        self.walls.append(wall(790, 50, resourses(), "vert", 600))
-
-        self.bullets = []
-
-    def level_completion(self):
-        if(self.hero.points > 50):
-            self.clear()
-            self.on_close()
-            window = Ending(800, 600)
-            pyglet.clock.schedule_interval(window.update, 1 / 60.0)
-            pyglet.app.run()
-
-
-class Level3(Levels):
-    def create_objects_on_map(self):
-        self.shoot = 0
-
-        self.hero = Hero(10, 100, resourses())
-        self.zombies = [Zombie_usual(randint(100, 200),
-                                     randint(400, 600),
-                                     resourses(),
-                                     self.hero) for i in range(3)]
-        self.walls = []
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "horiz",
-                               780))
-
-        self.walls.append(wall(100,
-                               150,
-                               resourses(),
-                               "horiz",
-                               400))
-
-        self.walls.append(wall(10,
-                               50,
-                               resourses(),
-                               "vert",
-                               600))
-        self.walls.append(wall(790, 50, resourses(), "vert", 600))
-
-        self.bullets = []
-
-    def level_completion(self):
-        if(self.hero.points > 250):
-            self.clear()
-            self.on_close()
-            window = Ending(800, 600)
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
             pyglet.app.run()
 
