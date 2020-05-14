@@ -28,6 +28,9 @@ class resourses:
         self.zombie_fast_left = pyglet.image.load('zombie_fast_left.png')
         self.zombie_fast_right = pyglet.image.load('zombie_fast_right.png')
 
+        self.boss_left = pyglet.image.load('boss_left.png')
+        self.boss_right = pyglet.image.load('boss_right.png')
+
 
 class Interface_elements:
     def __init__(self, x, y):
@@ -160,6 +163,7 @@ class Zombie(Unit):
 
 
     def behave(self):
+        self.extra_ection()
         if (self.hero.x <= self.x):
             self.orientation = 0
             self.picture = self.left_pict
@@ -179,6 +183,8 @@ class Zombie(Unit):
                     self.vx = self.velocity * randint(1, 10)
                     self.ax = 0
 
+    def extra_ection(self):
+        pass
 
 class Zombie_usual(Zombie):
     def __init__(self, x, y, res, hero):
@@ -201,29 +207,25 @@ class Zombie_fast(Zombie):
         self.right_pict = self.res.zombie_fast_right
 
 
+class Zombie_Boss(Zombie):
+    def __init__(self, x, y, res, hero, zombies):
+        super().__init__(x, y, res, hero)
+        self.hp = 10
+        self.velocity = 20
+        self.cost = 100
+        self.time = 0
 
+        self.zombies = zombies
 
+        self.left_pict = self.res.boss_left
+        self.right_pict = self.res.boss_right
 
-class Zombie_Boss(Unit):
-    def __init__(self, x, y, res, hero):
-        super().__init__(self, x, y, res)
-        self.hero = hero
-        self.picture = res.Zombie_boss
-        self.hp = 1000
-
-    def behave(self):
-        if (self.hero.x <= self.x) and (self.ax > -30):
-            self.ax -= 2
-
-        elif (self.hero.x >= self.x) and (self.ax > 30):
-            self.ax += 2
-
-        elif (self.hero.y <= self.y) and (self.ay > -30):
-            self.ay -= 2
-
-        elif (self.hero.y >= self.x) and (self.ay < 30):
-            self.ay += 2
-
+    def extra_ection(self):
+        self.time += 1
+        print (self.hp)
+        if self.time >= 100:
+            self.zombies.append(Zombie_fast(self.x, self.y, self.res, self.hero))
+            self.time = 1
 
 class Hero(Unit):
     def __init__(self, x, y, res):
@@ -485,10 +487,10 @@ class Levels(pyglet.window.Window):
         for z in self.zombies:
             z.behave()
             for bul in self.bullets:
-                if self.collision_objects(dt, bul, z) == True:
+                if self.collision_objects(dt, bul, z) == True and bul.dead == False:
                     bul.dead = True
                     z.hp -= 1
-                    self.hero.points += z.cost
+
 
             if self.collision_objects(dt, self.hero, z) == True:
                 self.hero.hp -= 1
@@ -498,6 +500,7 @@ class Levels(pyglet.window.Window):
         i = len(self.zombies) - 1
         while i >= 0:
             if (self.zombies[i].hp <= 0):
+                self.hero.points += self.zombies[i].cost
                 del self.zombies[i]
             i -= 1
     def clean_dead_bullets(self, dt):
@@ -536,15 +539,9 @@ class Level1(Levels):
 
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
-        self.zombies = [Zombie_usual(randint(100, 200),
-                                     randint(400, 600),
-                                     res,
-                                     self.hero) for i in range(5)]
-        for i in range (2):
-            self.zombies.append(Zombie_fast(randint(100, 200),
-                                     randint(400, 600),
-                                     res,
-                                     self.hero))
+        self.zombies = []
+        self.zombies.append(Zombie_Boss(randint(100, 200),
+                                     randint(400, 600), res, self.hero, self.zombies))
         self.walls = []
         self.walls.append(wall(0, 100, res, "horiz", 800))
         self.walls.append(wall(0, 250, res, "horiz", 200))
@@ -558,7 +555,7 @@ class Level1(Levels):
         self.bullets = []
 
     def level_completion(self):
-        if(self.hero.points >= 15):
+        if(self.hero.points >= 200):
             global success
             success = True
             self.clear()
