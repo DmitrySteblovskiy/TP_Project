@@ -1,6 +1,9 @@
 import pyglet
 from pyglet.gl import GL_LINES
+<<<<<<< HEAD
 import GameObjects.py
+=======
+>>>>>>> Laga
 
 
 class wall(GameObject):
