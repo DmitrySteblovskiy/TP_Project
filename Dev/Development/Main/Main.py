@@ -31,6 +31,8 @@ class resourses:
         self.boss_left = pyglet.image.load('boss_left.png')
         self.boss_right = pyglet.image.load('boss_right.png')
 
+        self.cloning = pyglet.image.load('cloning.png')
+
 
 class Interface_elements:
     def __init__(self, x, y):
@@ -225,6 +227,26 @@ class Zombie_Boss(Zombie):
         print (self.hp)
         if self.time >= 100:
             self.zombies.append(Zombie_fast(self.x, self.y, self.res, self.hero))
+            self.time = 1
+
+
+class Zombie_cloning(Zombie):
+    def __init__(self, x, y, res, hero, zombies):
+        super().__init__(x, y, res, hero)
+        self.hp = 1
+        self.velocity = 40
+        self.cost = 1
+        self.time = 0
+
+        self.zombies = zombies
+
+        self.left_pict = self.res.cloning
+        self.right_pict = self.res.cloning
+
+    def extra_ection(self):
+        self.time += 1
+        if self.time >= 100:
+            self.zombies.append(Zombie_cloning(self.x, self.y, self.res, self.hero, self.zombies))
             self.time = 1
 
 class Hero(Unit):
@@ -540,7 +562,7 @@ class Level1(Levels):
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
-        self.zombies.append(Zombie_Boss(randint(100, 200),
+        self.zombies.append(Zombie_cloning(randint(100, 200),
                                      randint(400, 600), res, self.hero, self.zombies))
         self.walls = []
         self.walls.append(wall(0, 100, res, "horiz", 800))
