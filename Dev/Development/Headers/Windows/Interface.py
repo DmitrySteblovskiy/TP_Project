@@ -1,8 +1,9 @@
 import pyglet
 from pyglet.gl import GL_BLEND
-from Resources import *
+from Levels import *
 from GameObject import *
 from Interface_elements import *
+from .Res.Resources import *
 
 
 class Interface(pyglet.window.Window):
@@ -58,3 +59,10 @@ class Ending(Interface):
             self.phon = self.res.phon_success
         else:
             self.phon = self.res.phon_fail
+
+
+if __name__ == "__main__":
+    window = Map(800, 600)
+    window.config.alpha_size = 8
+    pyglet.clock.schedule_interval(window.update, 1 / 60.0)
+    pyglet.app.run()
