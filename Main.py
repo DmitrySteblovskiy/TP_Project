@@ -4,7 +4,6 @@ from pyglet.window import key
 from pyglet.gl import GL_LINES, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 
 
-progress = 0
 success = False
 level_passed = 1
 
