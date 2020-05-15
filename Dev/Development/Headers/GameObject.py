@@ -90,6 +90,8 @@ class Zombie_usual(Zombie):
         self.left_pict = self.res.Zombie_usual_left
         self.right_pict = self.res.Zombie_usual_right
 
+        self.picture = self.left_pict
+
 
 class Zombie_fast(Zombie):
     def __init__(self, x, y, res, hero):
@@ -100,6 +102,8 @@ class Zombie_fast(Zombie):
 
         self.left_pict = self.res.zombie_fast_left
         self.right_pict = self.res.zombie_fast_right
+
+        self.picture = self.left_pict
 
 
 class Zombie_Boss(Zombie):
@@ -114,6 +118,8 @@ class Zombie_Boss(Zombie):
 
         self.left_pict = self.res.boss_left
         self.right_pict = self.res.boss_right
+
+        self.picture = self.left_pict
 
     def extra_ection(self):
         self.time += 1
@@ -138,6 +144,8 @@ class Zombie_cloning(Zombie):
         self.left_pict = self.res.cloning
         self.right_pict = self.res.cloning
 
+        self.picture = self.left_pict
+
     def extra_ection(self):
         self.time += 1
         if self.time >= 100:
@@ -157,6 +165,8 @@ class Hero(Unit):
         self.hp = 100
         self.jump_speed = 400  # default
         self.points = 0
+
+        self.picture = self.res.hero_left
 
     def control(self, a_x, a_y):
         if a_x == -1:
