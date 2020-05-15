@@ -214,6 +214,8 @@ class Zombie_usual(Zombie):
         self.left_pict = self.res.Zombie_usual_left
         self.right_pict = self.res.Zombie_usual_right
 
+        self.picture = self.left_pict
+
 
 class Zombie_fast(Zombie):
     def __init__(self, x, y, res, hero):
@@ -224,6 +226,7 @@ class Zombie_fast(Zombie):
 
         self.left_pict = self.res.zombie_fast_left
         self.right_pict = self.res.zombie_fast_right
+        self.picture = self.left_pict
 
 
 class Zombie_Boss(Zombie):
@@ -238,6 +241,7 @@ class Zombie_Boss(Zombie):
 
         self.left_pict = self.res.boss_left
         self.right_pict = self.res.boss_right
+        self.picture = self.left_pict
 
     def extra_ection(self):
         self.time += 1
@@ -261,6 +265,7 @@ class Zombie_cloning(Zombie):
 
         self.left_pict = self.res.cloning
         self.right_pict = self.res.cloning
+        self.picture = self.left_pict
 
     def extra_ection(self):
         self.time += 1
@@ -617,8 +622,7 @@ class Level1(Levels):
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
-        music = pyglet.resource.media('Level1.mp3')
-        music.play()
+
 
         for i in range(10):
             self.zombies.append(Zombie_usual(randint(100, 200),
