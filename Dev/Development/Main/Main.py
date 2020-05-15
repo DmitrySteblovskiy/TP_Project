@@ -662,8 +662,6 @@ class Level2(Levels):
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
-        music = pyglet.resource.media('Level2.mp3')
-        music.play()
 
         for i in range(3):
             self.zombies.append(Zombie_usual(randint(100, 200),
