@@ -2,10 +2,6 @@ from GameObjects import *
 from Map import *
 
 
-success = False
-level_passed = 1
-
-
 class Interface_elements:
     def __init__(self, x, y):
         self.x = x
