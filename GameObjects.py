@@ -1,10 +1,8 @@
 from Resources import *
+from abc import ABC
 
 
-success = False
-level_passed = 1
-
-class GameObject:
+class GameObject(ABC):
     def __init__(self, x, y, res):
         self.res = res
         self.x = x

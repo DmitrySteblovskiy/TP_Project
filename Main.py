@@ -1,4 +1,4 @@
-from Map import *
+from Windows import *
 
 
 if __name__ == "__main__":

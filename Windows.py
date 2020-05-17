@@ -1,14 +1,77 @@
+from Resources import *
 from GameObjects import *
-from Map import *
 
 
-class Interface_elements:
+file = open('Globals.txt')
+globals = file.read()
+info = globals.split(' ')
+success = bool(info[2])
+level_passed = int(info[5])
+file.close()
+
+
+class Interface(pyglet.window.Window):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.res = resourses()
+        self.buttons = []
+        self.set_interface()
+
+    def on_draw(self):
+        glEnable(GL_BLEND)
+
+        self.phon.blit(0, 0)
+
+        for button in self.buttons:
+            button.draw()
+
+    def update(self, dt):
+        pass
+
+    def on_mouse_press(self, x, y, button, modifier):
+        if (button == pyglet.window.mouse.LEFT):
+            for button_interface in self.buttons:
+                if button_interface.is_inside(x, y):
+                    button_interface.action_if_clicked(self)
+
+
+class Map(Interface):
+    def set_interface(self):
+        global level_passed
+
+        self.phon = self.res.phon_menu
+        self.buttons.append(LevelButton(100, 200, self.res, 1))
+
+        if level_passed >= 2:
+            self.buttons.append(LevelButton(200, 200, self.res, 2))
+
+        if level_passed >= 3:
+            self.buttons.append(LevelButton(500, 200, self.res, 3))
+
+        if level_passed >= 4:
+            self.buttons.append(LevelButton(600, 200, self.res, 4))
+
+        if level_passed >= 5:
+            self.buttons.append(LevelButton(700, 200, self.res, 5))
+
+
+class Ending(Interface):
+    def set_interface(self):
+        self.buttons.append(MenuButton(400, 100, self.res))
+        global success
+        if (success):
+            self.phon = self.res.phon_success
+        else:
+            self.phon = self.res.phon_fail
+
+
+class InterfaceElements:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
 
-class Interface_buttons(Interface_elements):
+class InterfaceButtons(InterfaceElements):
     def is_inside(self, mouse_x, mouse_y):
         if mouse_x >= self.x and mouse_x <= self.x + self.picture.width:
             if mouse_y >= self.y and mouse_y <= self.y + self.picture.height:
@@ -20,7 +83,7 @@ class Interface_buttons(Interface_elements):
         self.picture.blit(self.x, self.y)
 
 
-class Level_button(Interface_buttons):
+class LevelButton(InterfaceButtons):
     def __init__(self, x, y, res, level):
         super().__init__(x, y)
         self.level = level
@@ -70,7 +133,7 @@ class Level_button(Interface_buttons):
             pyglet.app.run()
 
 
-class Menu_button(Interface_buttons):
+class MenuButton(InterfaceButtons):
     def __init__(self, x, y, res):
         super().__init__(x, y)
 
@@ -85,16 +148,7 @@ class Menu_button(Interface_buttons):
         pyglet.app.run()
 
 
-class Text_button(Interface_elements):
-    def __init__(self, text, x, y):
-        super().__init__(x,y)
-        self.label = pyglet.text.Label(text, 'Times New Roman', 36, x, y)
-
-    def draw(self):
-        self.label.draw()
-
-
-class Levels(pyglet.window.Window):
+class Level(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.create_objects_on_map()
@@ -119,27 +173,18 @@ class Levels(pyglet.window.Window):
     def collision_walls(self, dt, object1):
         for wall in self.walls:
             if (wall.orientation == "horiz"):
-                if ((abs(object1.y - wall.y) <= abs(object1.vy) * dt) and (
-                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
-                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= wall.x + wall.length))):
+                if self.collide_down(object1, wall, dt):
                     object1.concerns = True
                     object1.y = wall.y
                     object1.set_collision(-1, -1, 0, 0)
-                if ((abs(object1.y + object1.picture.height - wall.y) <= abs(object1.vy) * dt) and (
-                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
-                    object1.x + object1.picture.width - abs(
-                        object1.vx) * dt) <= wall.x + wall.length))):  # удар башкой
+                if self.collide_up(object1, wall, dt):  # удар башкой
                     object1.set_collision(-1, -1, 0, -1)
             else:
-                if ((abs(object1.x - wall.x) <= abs(object1.vx) * dt) and (
-                        (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
-                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))):  # стена слева
+                if self.collide_left(object1, wall, dt):  # стена слева
                     object1.concerns = True
                     object1.x = wall.x + 1
                     object1.set_collision(-1, 0, -1, -1)
-                elif ((abs(wall.x - object1.x - object1.picture.width) <= abs(object1.vx) * dt) and (
-                        (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
-                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))):  # стена справа
+                elif self.collide_right(object1, wall, dt):  # стена справа
                     object1.concerns = True
                     object1.x = wall.x - object1.picture.width - 1
                     object1.set_collision(0, -1, -1, -1)
@@ -147,51 +192,46 @@ class Levels(pyglet.window.Window):
     def collide_wall(self, dt, object1):
         for wall in self.walls:
             if (wall.orientation == "horiz"):
-                if ((abs(object1.y - wall.y) <= abs(object1.vy) * dt) and (
-                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
-                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= wall.x + wall.length))):
-                    object1.concerns = True
-                    object1.y = wall.y
-                    object1.dead = True
-                if ((abs(object1.y + object1.picture.height - wall.y) <= abs(object1.vy) * dt) and (
-                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
-                    object1.x + object1.picture.width - abs(
-                        object1.vx) * dt) <= wall.x + wall.length))):  # удар башкой
+                if (self.collide_left(object1, wall, dt) or
+                        self.collide_right(object1, wall, dt)):
                     object1.dead = True
             else:
-                if ((abs(object1.x - wall.x) <= abs(object1.vx) * dt) and (
-                        (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
-                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))):  # стена слева
-                    object1.concerns = True
-                    object1.x = wall.x + 1
+                if (self.collide_up(object1, wall, dt) or
+                        self.collide_down(object1, wall, dt)):
                     object1.dead = True
-                elif ((abs(wall.x - object1.x - object1.picture.width) <= abs(object1.vx) * dt) and (
+
+
+    def collide_left(self, object1, wall, dt):
+        return (abs(object1.x - wall.x) <= abs(object1.vx) * dt) and (
                         (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
-                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))):  # стена справа
-                    object1.concerns = True
-                    object1.x = wall.x - object1.picture.width - 1
-                    object1.dead = True
+                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))
+    def collide_right(self, object1, wall, dt):
+        return (abs(wall.x - object1.x - object1.picture.width) <= abs(object1.vx) * dt) and (
+                        (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
+                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))
+    def collide_down(self, object1, wall, dt):
+        return ((abs(object1.y - wall.y) <= abs(object1.vy) * dt) and (
+                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
+                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= wall.x + wall.length)))
+    def collide_up(self, object1, wall, dt):
+        return ((abs(object1.y + object1.picture.height - wall.y) <= abs(object1.vy) * dt) and (
+                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
+                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= wall.x + wall.length)))
 
     def collision_objects(self, dt, object1, object2):
-        if ((object2.x <= object1.x + object1.picture.width <= object2.x + object2.picture.width) and (
-                (object2.y <= object1.y <= object2.y + object2.picture.height) or (
-                object2.y <= object1.y + object1.picture.height <= object2.y + object2.picture.height))):
+        if self.cross_x(object1, object2)\
+                or self.cross_y(object1, object2):
             return True
 
-        if ((object2.x <= object1.x <= object2.x + object2.picture.width) and (
+    def cross_x(self, object1, object2):
+        return (object2.x <= object1.x + object1.picture.width <= object2.x + object2.picture.width) and (
                 (object2.y <= object1.y <= object2.y + object2.picture.height) or (
-                object2.y <= object1.y + object1.picture.height <= object2.y + object2.picture.height))):
-            return True
+                object2.y <= object1.y + object1.picture.height <= object2.y + object2.picture.height))
 
-        if (object1.y <= object2.y <= object2.y + object2.picture.height <= object1.y + object1.picture.height) and (
+    def cross_y(self, object1, object2):
+        return (object1.y <= object2.y <= object2.y + object2.picture.height <= object1.y + object1.picture.height) and (
                 (object2.x <= object1.x <= object2.x + object2.picture.width) or (
-                object2.x <= object1.x + object1.picture.width <= object2.x + object2.picture.width)):
-            return True
-
-        if (object1.x <= object2.x <= object2.x + object2.picture.width <= object1.x + object1.picture.width) and (
-                (object2.y <= object1.y <= object2.y + object2.picture.height) or (
-                object2.y <= object1.y + object1.picture.height <= object2.y + object2.picture.height)):
-            return True
+                object2.x <= object1.x + object1.picture.width <= object2.x + object2.picture.width))
 
     def on_key_release(self, symbol, modifiers):
         if symbol == key.LEFT:
@@ -307,7 +347,7 @@ class Levels(pyglet.window.Window):
                 self.shoot = 0
 
 
-class Level1(Levels):
+class Level1(Level):
     def create_objects_on_map(self):
         self.shoot = 0
         self.mission = "kill all zombies"
@@ -351,7 +391,7 @@ class Level1(Levels):
             pyglet.app.run()
 
 
-class Level2(Levels):
+class Level2(Level):
     def create_objects_on_map(self):
         self.shoot = 0
         self.mission = "kill all zombies"
@@ -397,7 +437,7 @@ class Level2(Levels):
             pyglet.app.run()
 
 
-class Level3(Levels):
+class Level3(Level):
     def create_objects_on_map(self):
         self.shoot = 0
         self.mission = "kill all zombies"
@@ -439,7 +479,7 @@ class Level3(Levels):
             pyglet.app.run()
 
 
-class Level4(Levels):
+class Level4(Level):
     def create_objects_on_map(self):
         self.shoot = 0
         self.mission = "kill all zombies"
@@ -485,7 +525,7 @@ class Level4(Levels):
             pyglet.app.run()
 
 
-class Level5(Levels):
+class Level5(Level):
     def create_objects_on_map(self):
         self.shoot = 0
         self.mission = "kill all zombies"

@@ -4,10 +4,14 @@ from pyglet.window import key
 from pyglet.gl import GL_LINES, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 
 
-success = False
-level_passed = 1
-
 class resourses:
+    file = open('Globals.txt')
+    globals = file.read()
+    info = globals.split(' ')
+    success = bool(info[2])
+    level_passed = int(info[5])
+    file.close()
+
     def __init__(self):
         self.Zombie_usual_right = pyglet.image.load('res/zombie_right.png')
         self.Zombie_usual_left = pyglet.image.load('res/zombie_left.png')
@@ -32,3 +36,5 @@ class resourses:
         self.boss_right = pyglet.image.load('res/boss_right.png')
 
         self.cloning = pyglet.image.load('res/cloning.png')
+
+
