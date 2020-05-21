@@ -4,7 +4,7 @@ from pyglet.window import key
 from pyglet.gl import GL_LINES, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 
 
-class resourses:
+class resources:
     file = open('Globals.txt')
     globals = file.read()
     info = globals.split(' ')
@@ -29,8 +29,8 @@ class resourses:
         self.phon_fail = pyglet.image.load('res/fail.png')
         self.phon_menu = pyglet.image.load('res/phon_menu.png')
 
-        self.zombie_fast_left = pyglet.image.load('res/zombie_fast_left.png')
-        self.zombie_fast_right = pyglet.image.load('res/zombie_fast_right.png')
+        self.ZombieFast_left = pyglet.image.load('res/zombie_fast_left.png')
+        self.ZombieFast_right = pyglet.image.load('res/zombie_fast_right.png')
 
         self.boss_left = pyglet.image.load('res/boss_left.png')
         self.boss_right = pyglet.image.load('res/boss_right.png')

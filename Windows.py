@@ -1,19 +1,10 @@
 from Resources import *
 from GameObjects import *
 
-
-file = open('Globals.txt')
-globals = file.read()
-info = globals.split(' ')
-success = bool(info[2])
-level_passed = int(info[5])
-file.close()
-
-
 class Interface(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.res = resourses()
+        self.res = resources()
         self.buttons = []
         self.set_interface()
 
@@ -37,29 +28,26 @@ class Interface(pyglet.window.Window):
 
 class Map(Interface):
     def set_interface(self):
-        global level_passed
-
         self.phon = self.res.phon_menu
         self.buttons.append(LevelButton(100, 200, self.res, 1))
 
-        if level_passed >= 2:
+        if resources.level_passed >= 2:
             self.buttons.append(LevelButton(200, 200, self.res, 2))
 
-        if level_passed >= 3:
+        if resources.level_passed >= 3:
             self.buttons.append(LevelButton(500, 200, self.res, 3))
 
-        if level_passed >= 4:
+        if resources.level_passed >= 4:
             self.buttons.append(LevelButton(600, 200, self.res, 4))
 
-        if level_passed >= 5:
+        if resources.level_passed >= 5:
             self.buttons.append(LevelButton(700, 200, self.res, 5))
 
 
 class Ending(Interface):
     def set_interface(self):
         self.buttons.append(MenuButton(400, 100, self.res))
-        global success
-        if (success):
+        if (resources.success):
             self.phon = self.res.phon_success
         else:
             self.phon = self.res.phon_fail
@@ -89,13 +77,13 @@ class LevelButton(InterfaceButtons):
         self.level = level
         if self.level == 1:
             self.picture = res.menu_level_1
-        if level == 2:
+        if self.level == 2:
             self.picture = res.menu_level_2
-        if level == 3:
+        if self.level == 3:
             self.picture = res.menu_level_3
-        if level == 4:
+        if self.level == 4:
             self.picture = res.menu_level_4
-        if level == 5:
+        if self.level == 5:
             self.picture = res.menu_level_5
 
     def action_if_clicked(self, window_current):
@@ -170,53 +158,53 @@ class Level(pyglet.window.Window):
         for bul in self.bullets:
             bul.draw()
 
-    def collision_walls(self, dt, object1):
-        for wall in self.walls:
-            if (wall.orientation == "horiz"):
-                if self.collide_down(object1, wall, dt):
+    def collision_Walls(self, dt, object1):
+        for Wall in self.Walls:
+            if (Wall.orientation == "horiz"):
+                if self.collide_down(object1, Wall, dt):
                     object1.concerns = True
-                    object1.y = wall.y
+                    object1.y = Wall.y
                     object1.set_collision(-1, -1, 0, 0)
-                if self.collide_up(object1, wall, dt):  # удар башкой
+                if self.collide_up(object1, Wall, dt):  # удар башкой
                     object1.set_collision(-1, -1, 0, -1)
             else:
-                if self.collide_left(object1, wall, dt):  # стена слева
+                if self.collide_left(object1, Wall, dt):  # стена слева
                     object1.concerns = True
-                    object1.x = wall.x + 1
+                    object1.x = Wall.x + 1
                     object1.set_collision(-1, 0, -1, -1)
-                elif self.collide_right(object1, wall, dt):  # стена справа
+                elif self.collide_right(object1, Wall, dt):  # стена справа
                     object1.concerns = True
-                    object1.x = wall.x - object1.picture.width - 1
+                    object1.x = Wall.x - object1.picture.width - 1
                     object1.set_collision(0, -1, -1, -1)
 
-    def collide_wall(self, dt, object1):
-        for wall in self.walls:
-            if (wall.orientation == "horiz"):
-                if (self.collide_left(object1, wall, dt) or
-                        self.collide_right(object1, wall, dt)):
+    def collide_Wall(self, dt, object1):
+        for Wall in self.Walls:
+            if (Wall.orientation == "horiz"):
+                if (self.collide_left(object1, Wall, dt) or
+                        self.collide_right(object1, Wall, dt)):
                     object1.dead = True
             else:
-                if (self.collide_up(object1, wall, dt) or
-                        self.collide_down(object1, wall, dt)):
+                if (self.collide_up(object1, Wall, dt) or
+                        self.collide_down(object1, Wall, dt)):
                     object1.dead = True
 
 
-    def collide_left(self, object1, wall, dt):
-        return (abs(object1.x - wall.x) <= abs(object1.vx) * dt) and (
-                        (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
-                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))
-    def collide_right(self, object1, wall, dt):
-        return (abs(wall.x - object1.x - object1.picture.width) <= abs(object1.vx) * dt) and (
-                        (wall.y <= abs(object1.y) <= wall.y + wall.length) or (
-                        wall.y <= abs(object1.y + object1.picture.height) <= wall.y + wall.length))
-    def collide_down(self, object1, wall, dt):
-        return ((abs(object1.y - wall.y) <= abs(object1.vy) * dt) and (
-                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
-                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= wall.x + wall.length)))
-    def collide_up(self, object1, wall, dt):
-        return ((abs(object1.y + object1.picture.height - wall.y) <= abs(object1.vy) * dt) and (
-                        (wall.x <= abs(object1.x - abs(object1.vx) * dt) <= wall.x + wall.length) or (wall.x <= abs(
-                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= wall.x + wall.length)))
+    def collide_left(self, object1, Wall, dt):
+        return (abs(object1.x - Wall.x) <= abs(object1.vx) * dt) and (
+                        (Wall.y <= abs(object1.y) <= Wall.y + Wall.length) or (
+                        Wall.y <= abs(object1.y + object1.picture.height) <= Wall.y + Wall.length))
+    def collide_right(self, object1, Wall, dt):
+        return (abs(Wall.x - object1.x - object1.picture.width) <= abs(object1.vx) * dt) and (
+                        (Wall.y <= abs(object1.y) <= Wall.y + Wall.length) or (
+                        Wall.y <= abs(object1.y + object1.picture.height) <= Wall.y + Wall.length))
+    def collide_down(self, object1, Wall, dt):
+        return ((abs(object1.y - Wall.y) <= abs(object1.vy) * dt) and (
+                        (Wall.x <= abs(object1.x - abs(object1.vx) * dt) <= Wall.x + Wall.length) or (Wall.x <= abs(
+                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= Wall.x + Wall.length)))
+    def collide_up(self, object1, Wall, dt):
+        return ((abs(object1.y + object1.picture.height - Wall.y) <= abs(object1.vy) * dt) and (
+                        (Wall.x <= abs(object1.x - abs(object1.vx) * dt) <= Wall.x + Wall.length) or (Wall.x <= abs(
+                    object1.x + object1.picture.width - abs(object1.vx) * dt) <= Wall.x + Wall.length)))
 
     def collision_objects(self, dt, object1, object2):
         if self.cross_x(object1, object2)\
@@ -270,10 +258,10 @@ class Level(pyglet.window.Window):
         self.clean_dead_zombies()
         self.death_condition()
 
-        self.collision_walls(dt, self.hero)
+        self.collision_Walls(dt, self.hero)
 
         for zombie in self.zombies:
-            self.collision_walls(dt, zombie)
+            self.collision_Walls(dt, zombie)
         self.level_completion()
 
     def draw_interface(self):
@@ -320,16 +308,15 @@ class Level(pyglet.window.Window):
     def clean_dead_bullets(self, dt):
         i = len(self.bullets) - 1
         while i >= 0:
-            if (self.collide_wall(dt, self.bullets[i])):
+            if (self.collide_Wall(dt, self.bullets[i])):
                 self.bullets[i].dead = True
             if (self.bullets[i].dead == True):
                 del self.bullets[i]
             i -= 1
 
     def death_condition(self):
-        global success
         if (self.hero.hp <= 0):
-            success = False
+            resources.success = False
             self.clear()
             self.on_close()
             window = Ending(800, 600)
@@ -340,10 +327,10 @@ class Level(pyglet.window.Window):
     def shooting(self):
         if self.shoot == 1:
             if self.hero.orientation == 1:
-                self.bullets.append(sniper_bullet(self.hero.x + 20, self.hero.y + 30, resourses(), 500, 0))
+                self.bullets.append(sniper_bullet(self.hero.x + 20, self.hero.y + 30, resources(), 500, 0))
                 self.shoot = 0
             else:
-                self.bullets.append(sniper_bullet(self.hero.x, self.hero.y + 30, resourses(), -500, 0))
+                self.bullets.append(sniper_bullet(self.hero.x, self.hero.y + 30, resources(), -500, 0))
                 self.shoot = 0
 
 
@@ -352,7 +339,7 @@ class Level1(Level):
         self.shoot = 0
         self.mission = "kill all zombies"
 
-        res = resourses()
+        res = resources()
 
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
@@ -360,31 +347,28 @@ class Level1(Level):
 
 
         for i in range(10):
-            self.zombies.append(Zombie_usual(randint(100, 200),
+            self.zombies.append(ZombieUsual(randint(100, 200),
                                      randint(400, 600), res, self.hero))
-        self.walls = []
-        self.walls.append(wall(0, 100, res, "horiz", 800))
-        self.walls.append(wall(0, 250, res, "horiz", 200))
-        self.walls.append(wall(600, 250, res, "horiz", 200))
+        self.Walls = []
+        self.Walls.append(Wall(0, 100, res, "horiz", 800))
+        self.Walls.append(Wall(0, 250, res, "horiz", 200))
+        self.Walls.append(Wall(600, 250, res, "horiz", 200))
 
-        self.walls.append(wall(200, 400, res, "horiz", 400))
+        self.Walls.append(Wall(200, 400, res, "horiz", 400))
 
-        self.walls.append(wall(0, 100, res, "vert", 1000))
-        self.walls.append(wall(800, 100, res, "vert", 1000))
+        self.Walls.append(Wall(0, 100, res, "vert", 1000))
+        self.Walls.append(Wall(800, 100, res, "vert", 1000))
 
         self.bullets = []
 
     def level_completion(self):
         if(len(self.zombies) == 0):
-            global success
-            global level_passed
-
-            success = True
+            resources.success = True
             self.clear()
             self.on_close()
 
-            if level_passed < 2:
-                level_passed = 2
+            if resources.level_passed < 2:
+                resources.level_passed = 2
             window = Ending(800, 600)
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
@@ -396,41 +380,38 @@ class Level2(Level):
         self.shoot = 0
         self.mission = "kill all zombies"
 
-        res = resourses()
+        res = resources()
 
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
 
         for i in range(3):
-            self.zombies.append(Zombie_usual(randint(100, 200),
+            self.zombies.append(ZombieUsual(randint(100, 200),
                                              randint(400, 600), res, self.hero))
         for i in range(3):
-            self.zombies.append(Zombie_fast(randint(100, 200),
+            self.zombies.append(ZombieFast(randint(100, 200),
                                              randint(400, 600), res, self.hero))
-        self.walls = []
-        self.walls.append(wall(0, 100, res, "horiz", 800))
-        self.walls.append(wall(0, 250, res, "horiz", 200))
-        self.walls.append(wall(600, 250, res, "horiz", 200))
+        self.Walls = []
+        self.Walls.append(Wall(0, 100, res, "horiz", 800))
+        self.Walls.append(Wall(0, 250, res, "horiz", 200))
+        self.Walls.append(Wall(600, 250, res, "horiz", 200))
 
-        self.walls.append(wall(200, 400, res, "horiz", 400))
+        self.Walls.append(Wall(200, 400, res, "horiz", 400))
 
-        self.walls.append(wall(0, 100, res, "vert", 1000))
-        self.walls.append(wall(800, 100, res, "vert", 1000))
+        self.Walls.append(Wall(0, 100, res, "vert", 1000))
+        self.Walls.append(Wall(800, 100, res, "vert", 1000))
 
         self.bullets = []
 
     def level_completion(self):
-        if(len(self.zombies) == 0):
-            global success
-            global level_passed
-
-            success = True
+        if (len(self.zombies) == 0):
+            resources.success = True
             self.clear()
             self.on_close()
 
-            if level_passed < 3:
-                level_passed = 3
+            if resources.level_passed < 3:
+                resources.level_passed = 3
             window = Ending(800, 600)
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
@@ -442,37 +423,34 @@ class Level3(Level):
         self.shoot = 0
         self.mission = "kill all zombies"
 
-        res = resourses()
+        res = resources()
 
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
         for i in range(3):
-            self.zombies.append(Zombie_cloning(randint(100, 200),
+            self.zombies.append(ZombieСloning(randint(100, 200),
                                              randint(400, 600), res, self.hero, self.zombies))
-        self.walls = []
-        self.walls.append(wall(0, 100, res, "horiz", 800))
-        self.walls.append(wall(0, 250, res, "horiz", 200))
-        self.walls.append(wall(600, 250, res, "horiz", 200))
+        self.Walls = []
+        self.Walls.append(Wall(0, 100, res, "horiz", 800))
+        self.Walls.append(Wall(0, 250, res, "horiz", 200))
+        self.Walls.append(Wall(600, 250, res, "horiz", 200))
 
-        self.walls.append(wall(200, 400, res, "horiz", 400))
+        self.Walls.append(Wall(200, 400, res, "horiz", 400))
 
-        self.walls.append(wall(0, 100, res, "vert", 1000))
-        self.walls.append(wall(800, 100, res, "vert", 1000))
+        self.Walls.append(Wall(0, 100, res, "vert", 1000))
+        self.Walls.append(Wall(800, 100, res, "vert", 1000))
 
         self.bullets = []
 
     def level_completion(self):
         if(len(self.zombies) == 0):
-            global success
-            global level_passed
-
-            success = True
+            resources.success = True
             self.clear()
             self.on_close()
 
-            if level_passed < 4:
-                level_passed = 4
+            if resources.level_passed < 4:
+                resources.level_passed = 4
             window = Ending(800, 600)
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
@@ -484,41 +462,38 @@ class Level4(Level):
         self.shoot = 0
         self.mission = "kill all zombies"
 
-        res = resourses()
+        res = resources()
 
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
-        self.zombies.append(Zombie_Boss(randint(100, 200),
+        self.zombies.append(ZombieBoss(randint(100, 200),
                                      randint(400, 600), res, self.hero, self.zombies))
-        self.zombies.append(Zombie_Boss(randint(100, 200),
+        self.zombies.append(ZombieBoss(randint(100, 200),
                                         randint(400, 600), res, self.hero, self.zombies))
         for i in range(3):
-            self.zombies.append(Zombie_usual(randint(100, 200),
+            self.zombies.append(ZombieUsual(randint(100, 200),
                                              randint(400, 600), res, self.hero))
-        self.walls = []
-        self.walls.append(wall(0, 100, res, "horiz", 800))
-        self.walls.append(wall(0, 250, res, "horiz", 200))
-        self.walls.append(wall(600, 250, res, "horiz", 200))
+        self.Walls = []
+        self.Walls.append(Wall(0, 100, res, "horiz", 800))
+        self.Walls.append(Wall(0, 250, res, "horiz", 200))
+        self.Walls.append(Wall(600, 250, res, "horiz", 200))
 
-        self.walls.append(wall(200, 400, res, "horiz", 400))
+        self.Walls.append(Wall(200, 400, res, "horiz", 400))
 
-        self.walls.append(wall(0, 100, res, "vert", 1000))
-        self.walls.append(wall(800, 100, res, "vert", 1000))
+        self.Walls.append(Wall(0, 100, res, "vert", 1000))
+        self.Walls.append(Wall(800, 100, res, "vert", 1000))
 
         self.bullets = []
 
     def level_completion(self):
         if(len(self.zombies) == 0):
-            global success
-            global level_passed
-
-            success = True
+            resources.success = True
             self.clear()
             self.on_close()
 
-            if level_passed < 5:
-                level_passed = 5
+            if resources.level_passed < 5:
+                resources.level_passed = 5
             window = Ending(800, 600)
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)
@@ -530,43 +505,42 @@ class Level5(Level):
         self.shoot = 0
         self.mission = "kill all zombies"
 
-        res = resourses()
+        res = resources()
 
         self.phon = res.phon_level_1
         self.hero = Hero(10, 100, res)
         self.zombies = []
         for i in range(20):
-            self.zombies.append(Zombie_Boss(randint(100, 200),
+            self.zombies.append(ZombieBoss(randint(100, 200),
                                         randint(400, 600), res, self.hero, self.zombies))
         for i in range(30):
-            self.zombies.append(Zombie_usual(randint(100, 200),
+            self.zombies.append(ZombieUsual(randint(100, 200),
                                              randint(400, 600), res, self.hero))
         for i in range (20):
-            self.zombies.append(Zombie_cloning(randint(100, 200),
+            self.zombies.append(ZombieСloning(randint(100, 200),
                                             randint(400, 600), res, self.hero, self.zombies))
-        self.walls = []
-        self.walls.append(wall(0, 100, res, "horiz", 800))
-        self.walls.append(wall(0, 250, res, "horiz", 200))
-        self.walls.append(wall(600, 250, res, "horiz", 200))
+        self.Walls = []
+        self.Walls.append(Wall(0, 100, res, "horiz", 800))
+        self.Walls.append(Wall(0, 250, res, "horiz", 200))
+        self.Walls.append(Wall(600, 250, res, "horiz", 200))
 
-        self.walls.append(wall(200, 400, res, "horiz", 400))
+        self.Walls.append(Wall(200, 400, res, "horiz", 400))
 
-        self.walls.append(wall(0, 100, res, "vert", 1000))
-        self.walls.append(wall(800, 100, res, "vert", 1000))
+        self.Walls.append(Wall(0, 100, res, "vert", 1000))
+        self.Walls.append(Wall(800, 100, res, "vert", 1000))
 
         self.bullets = []
 
     def level_completion(self):
         if(len(self.zombies) == 0):
-            global success
-            global level_passed
 
-            success = True
+
+            resources.success = True
             self.clear()
             self.on_close()
 
-            if level_passed < 6:
-                level_passed = 6
+            if resources.level_passed < 6:
+                resources.level_passed = 6
             window = Ending(800, 600)
             window.config.alpha_size = 8
             pyglet.clock.schedule_interval(window.update, 1 / 60.0)

@@ -79,7 +79,7 @@ class Zombie(Unit):
         pass
 
 
-class Zombie_usual(Zombie):
+class ZombieUsual(Zombie):
     def __init__(self, x, y, res, hero):
         super().__init__(x, y, res, hero)
         self.hp = 1
@@ -92,19 +92,19 @@ class Zombie_usual(Zombie):
         self.picture = self.left_pict
 
 
-class Zombie_fast(Zombie):
+class ZombieFast(Zombie):
     def __init__(self, x, y, res, hero):
         super().__init__(x, y, res, hero)
         self.hp = 1
         self.velocity = 60
         self.cost = 5
 
-        self.left_pict = self.res.zombie_fast_left
-        self.right_pict = self.res.zombie_fast_right
+        self.left_pict = self.res.ZombieFast_left
+        self.right_pict = self.res.ZombieFast_right
         self.picture = self.left_pict
 
 
-class Zombie_Boss(Zombie):
+class ZombieBoss(Zombie):
     def __init__(self, x, y, res, hero, zombies):
         super().__init__(x, y, res, hero)
         self.hp = 10
@@ -122,11 +122,11 @@ class Zombie_Boss(Zombie):
         self.time += 1
         if self.time >= 100:
             if (len (self.zombies) < 300):
-                self.zombies.append(Zombie_fast(self.x, self.y, self.res, self.hero))
+                self.zombies.append(ZombieFast(self.x, self.y, self.res, self.hero))
             self.time = 1
 
 
-class Zombie_cloning(Zombie):
+class ZombieСloning(Zombie):
     def __init__(self, x, y, res, hero, zombies):
         super().__init__(x, y, res, hero)
         self.hp = 1
@@ -146,7 +146,7 @@ class Zombie_cloning(Zombie):
         self.time += 1
         if self.time >= 100:
             if len(self.zombies) < 100:
-                self.zombies.append(Zombie_cloning(self.x, self.y, self.res, self.hero, self.zombies))
+                self.zombies.append(ZombieСloning(self.x, self.y, self.res, self.hero, self.zombies))
             self.time = 1
 
 
@@ -179,7 +179,7 @@ class Hero(Unit):
             self.vy = self.jump_speed
 
 
-class wall(GameObject):
+class Wall(GameObject):
     def __init__(self, x, y, res, orientation, length):
         super().__init__(x, y, res)
         self.ay = 0
